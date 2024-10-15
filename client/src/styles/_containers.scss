@@ -1,1 +1,13 @@
 @import './vars';
+
+.container{
+    max-width: var(--container-width);
+    padding: var(--container-padding);
+    margin: 0 auto;
+}
+
+.container-main {
+    max-width: var(--container-main);
+    padding: var(--container-padding);
+    margin: 0 auto;
+}

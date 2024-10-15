@@ -1,0 +1,46 @@
+
+.header {
+    padding: 20px 15px;
+    background-color: rgba($color: #d8d7d7f6, $alpha: 1.0);
+}
+
+.header__row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-link{
+    display: flex;
+    column-gap: 6px;
+    align-items: center;
+
+    & .logo-img{
+        width: 44px;
+        height: 44px;
+    }
+
+    & h3{
+        color: var(--accent);
+        font-size: 20px;
+        font-weight: 500;
+    }
+}
+
+.header-button__login {
+    padding: 10px;
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 17px;
+    font-style: normal;
+    border-radius: 12px;
+    border: 2px solid var(--accent);
+    background-color: var(--accent);
+
+    &:hover{
+        border: 2px solid rgba($color: #3a9fd6, $alpha: 1.0);
+        background-color: rgba($color: #3a9fd6, $alpha: 1.0);
+        transition: 0.4s;
+    }
+}
+
+
