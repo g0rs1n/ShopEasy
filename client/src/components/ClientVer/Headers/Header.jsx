@@ -16,8 +16,13 @@ export default function Header () {
                                 </h3>
                             </Link>
                         </div>
-                        <div className="header-button">
-                            <Link className="header-button__login" to={'/login'} >Login</Link>
+                        <div className='wrapper-header-main'>
+                            <div>
+
+                            </div>
+                            <div className="header-button">
+                                <Link className="header-button__login" to={'/login'} >Login</Link>
+                            </div>
                         </div>
                     </div>
                 </div>
