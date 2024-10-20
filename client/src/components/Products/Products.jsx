@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 import iconBuy from '../../assets/img/icons/products/buy-icon.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
+import { CartContext, SetCartContext } from '../Contexts'
 import './Products.scss'
 
-export default function Products ({activeTab, currentPage, setCurrentPage}) {
+export default function Products ({activeTab, currentPage, setCurrentPage, setProductsForCart}) {
 
     const [products, setProducts] = useState([])
     const productsPerPage = 12
@@ -29,6 +30,7 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
 
                 if (response) {
                     setProducts(response.data)
+                    setProductsForCart(response.data)
                 } else {
                     console.error('Error: get products api')
                 }
@@ -60,6 +62,7 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
                     totalProducts = {filterProducts.length}
                     clickPaginate = {clickPaginate}
                     setCurrentPage = {setCurrentPage}
+                    currentPage = {currentPage}
                 />
             </div>
         </>
@@ -67,6 +70,16 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
 }
 
 function ProductItem ({product}) {
+
+    const cart = useContext(CartContext)
+    const setCart = useContext(SetCartContext)
+
+    const handleOnClickBuy = (product) => {
+        const updateCart = [...cart, product]
+        setCart(updateCart)
+        localStorage.setItem('cart', JSON.stringify(updateCart))
+    }
+
     return (
         <>
             <div className='product-item'>
@@ -84,7 +97,7 @@ function ProductItem ({product}) {
                             {product.price}
                         </p> 
                         <div className='product-item-buy'>
-                            <img src={iconBuy} alt="buy_icon" className="product-item-buy__img" />
+                            <img onClick={handleOnClickBuy} src={iconBuy} alt="buy_icon" className="product-item-buy__img" />
                         </div>
                     </div> 
                 </div>
@@ -93,7 +106,7 @@ function ProductItem ({product}) {
     )
 }
 
-function Paginations ({productsPerPage, totalProducts, clickPaginate, setCurrentPage}) {
+function Paginations ({productsPerPage, totalProducts, clickPaginate, setCurrentPage, currentPage}) {
 
     const pageNumbers = []
 
@@ -107,9 +120,8 @@ function Paginations ({productsPerPage, totalProducts, clickPaginate, setCurrent
     return (
         <>
             <div className='paginations'>
-                {
-                    pageNumbers.length > 1 ? 
-                    <img onClick={handleClickButtonPrevArrow} className='paginations-arrow__img' src={arrowPrev} alt="prev-arrow" /> : ''
+                { 
+                    currentPage != 1 ? <img onClick={handleClickButtonPrevArrow} className='paginations-arrow__img' src={arrowPrev} alt="prev-arrow" /> : ''
                 }
                 <ul className='paginations-list'> 
                     {
@@ -123,8 +135,7 @@ function Paginations ({productsPerPage, totalProducts, clickPaginate, setCurrent
                     }
                 </ul>
                 {
-                    pageNumbers.length > 1 ?
-                    <img onClick={handleClickButtonNextArrow} className='paginations-arrow__img' src={arrowNext} alt="next-arrow" /> : ''
+                    currentPage != pageNumbers.length ? <img onClick={handleClickButtonNextArrow} className='paginations-arrow__img' src={arrowNext} alt="next-arrow" /> : ''
                 }
             </div>
         </>

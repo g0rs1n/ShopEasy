@@ -26,6 +26,32 @@
     }
 }
 
+.wrapper-header-main{
+    display: flex;
+    column-gap: 25px;
+    align-items: center;
+
+    .header-cart{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: 10px;
+        cursor: pointer;
+
+        & img{
+            width: 45px;
+            height: 45px;
+        }
+
+        & p{
+            font-family: var(--font-main-2);
+            font-size: 19px;
+            font-weight: 600;
+        }
+    }
+}
+
+
 .header-button__login {
     padding: 10px;
     color: #fff;

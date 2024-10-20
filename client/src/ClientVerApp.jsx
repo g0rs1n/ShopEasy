@@ -1,10 +1,10 @@
 import Main from './components/Main/Main'
 import './styles/ClientVerApp.scss'
 
-export default function ClientVerApp () {
+export default function ClientVerApp ({setProductsForCart}) {
     return (
         <>
-            <Main/>
+            <Main setProductsForCart={setProductsForCart}/>
         </>
     )
 }

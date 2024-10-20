@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import {Link} from 'react-router-dom'
 import './Header.scss'
+import iconCart from '../../../assets/img/icons/header/cart.png'
 import logo from '../../../assets/img/icons/logo/logo.png'
 
-export default function Header () {
+export default function Header ({cartCounter, setCartCounter}) {
+
     return (
         <>
              <header className="header">
@@ -17,8 +20,9 @@ export default function Header () {
                             </Link>
                         </div>
                         <div className='wrapper-header-main'>
-                            <div>
-
+                            <div className='header-cart'>
+                                <img className='header-cart__img' src={iconCart} alt="img_cart" />
+                                <p className='header-cart__p'>{cartCounter}</p>
                             </div>
                             <div className="header-button">
                                 <Link className="header-button__login" to={'/login'} >Login</Link>

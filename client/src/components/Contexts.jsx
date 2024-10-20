@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-export const categoryContext = createContext([])
-export const setCategoryContext = createContext(null)
+export const CartContext = createContext([])
+export const SetCartContext = createContext(null)
