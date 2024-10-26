@@ -1,13 +1,11 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 import axios from 'axios'
 import heart from '../../assets/img/icons/footer/heart.png'
-import { setCategoryContext } from "../Contexts"
 import './Sidebar.scss'
 
 export default function Sidebar ({updateTab}) {
 
     const [category, setCategory] = useState(['All'])
-    const setCategoryInMain = useContext(setCategoryContext)
     
     useEffect(() => {
         const funcGetCategory = async () => {
@@ -17,7 +15,6 @@ export default function Sidebar ({updateTab}) {
 
                 if (response) {
                     setCategory([...category,...response.data])
-                    setCategoryInMain(response.data)
                 } else {
                     console.error('Error: get all category api')
                 }
