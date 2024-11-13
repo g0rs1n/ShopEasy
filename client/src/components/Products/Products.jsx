@@ -5,6 +5,7 @@ import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
 import { CartContext, SetCartContext } from '../Contexts'
 import './Products.scss'
+import { Link } from 'react-router-dom'
 
 export default function Products ({activeTab, currentPage, setCurrentPage, setProductsForCart}) {
 
@@ -71,13 +72,25 @@ export default function Products ({activeTab, currentPage, setCurrentPage, setPr
 
 function ProductItem ({product}) {
 
+    const currentTime = Date.now()
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
 
     const handleOnClickBuy = (product) => {
-        const updateCart = [...cart, product]
-        setCart(updateCart)
-        localStorage.setItem('cart', JSON.stringify(updateCart))
+        const existingProduct = cart.find(prev => prev.id === product.id)
+        let updatedCart;
+
+        if (existingProduct) {
+            updatedCart = cart.map(item => item.id === product.id ?
+                {...item, quantity: item.quantity + 1} : item
+            )
+        } else {
+            updatedCart = [...cart, {id: product.id, quantity: 1}]
+        } 
+
+        setCart(updatedCart)
+        localStorage.setItem('cart', JSON.stringify(updatedCart))
+        localStorage.setItem('cartTimeStamp', currentTime.toString())
     }
 
     return (
@@ -88,16 +101,16 @@ function ProductItem ({product}) {
                 </div>
                 <div className='products-item-main'>
                    <div className='product-item-title'>
-                        <h3 className="product-item-title__h3">
+                        <Link to={`/item/${product.id}/${encodeURIComponent(product.title)}`} className="product-item-title__link">
                             {product.title}
-                        </h3>
+                        </Link>
                     </div>
                     <div className='product-item-price'>
                         <p className="product-item-price__p">
                             {product.price}
                         </p> 
                         <div className='product-item-buy'>
-                            <img onClick={handleOnClickBuy} src={iconBuy} alt="buy_icon" className="product-item-buy__img" />
+                            <img onClick={() => handleOnClickBuy(product)} src={iconBuy} alt="buy_icon" className="product-item-buy__img" />
                         </div>
                     </div> 
                 </div>

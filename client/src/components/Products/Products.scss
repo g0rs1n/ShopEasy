@@ -53,10 +53,16 @@
 }
 
 .product-item-title{
-    & h3{
-        max-width: 240px;
+    max-width: 240px;
+
+    & .product-item-title__link{
+        color: var(--text-color);
         font-weight: 500;
         font-size: 14px;
+
+        &:hover{
+            text-decoration: underline;
+        }
     }
 }
 

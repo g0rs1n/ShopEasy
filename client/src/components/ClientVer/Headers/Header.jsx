@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import {Link} from 'react-router-dom'
+import { CartContext } from '../../Contexts'
 import './Header.scss'
 import iconCart from '../../../assets/img/icons/header/cart.png'
 import logo from '../../../assets/img/icons/logo/logo.png'
 
-export default function Header ({cartCounter, setCartCounter}) {
+export default function Header ({}) {
 
+    const cart = useContext(CartContext)
+   
     return (
         <>
              <header className="header">
@@ -22,7 +25,7 @@ export default function Header ({cartCounter, setCartCounter}) {
                         <div className='wrapper-header-main'>
                             <div className='header-cart'>
                                 <img className='header-cart__img' src={iconCart} alt="img_cart" />
-                                <p className='header-cart__p'>{cartCounter}</p>
+                                <p className='header-cart__p'>{cart.length}</p>
                             </div>
                             <div className="header-button">
                                 <Link className="header-button__login" to={'/login'} >Login</Link>
