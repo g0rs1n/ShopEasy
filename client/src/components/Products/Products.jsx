@@ -72,7 +72,6 @@ export default function Products ({activeTab, currentPage, setCurrentPage, setPr
 
 function ProductItem ({product}) {
 
-    const currentTime = Date.now()
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
 
@@ -90,7 +89,11 @@ function ProductItem ({product}) {
 
         setCart(updatedCart)
         localStorage.setItem('cart', JSON.stringify(updatedCart))
-        localStorage.setItem('cartTimeStamp', currentTime.toString())
+
+        if (!localStorage.getItem('cartTimeStamp')) {
+            const currentTime = Date.now()
+            localStorage.setItem('cartTimeStamp', currentTime.toString())
+        }
     }
 
     return (

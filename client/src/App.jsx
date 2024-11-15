@@ -17,8 +17,9 @@ export default function App () {
             const updatedCart = localStorage.getItem('cart')
             const cartTimeStamp = localStorage.getItem('cartTimeStamp')
 
-            if (updatedCart) {
+            if (updatedCart && cartTimeStamp) {
 
+                const parsedCart = JSON.parse(updatedCart)
                 const currentTime = Date.now()
                 const timeDifference = currentTime - Number(cartTimeStamp)
                 const maxTimeCart = 24 * 60 * 60 * 1000
@@ -30,7 +31,7 @@ export default function App () {
                     setCart([])
 
                 } else {
-                    setCart(updatedCart)
+                    setCart(parsedCart)
                 }
 
             } 
