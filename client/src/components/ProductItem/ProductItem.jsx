@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { CartContext, SetCartContext } from '../Contexts'
+import { CartContext, SetCartContext, SetModalIsOpenContext } from '../Contexts'
 import axios from 'axios'
 import './ProductItem.scss'
 
@@ -8,6 +8,7 @@ export default function ProductItem () {
 
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
+    const setModalIsOpen = useContext(SetModalIsOpenContext)
     const {id} = useParams()
     const [product, setProduct] = useState({})
 
@@ -19,8 +20,10 @@ export default function ProductItem () {
             updatedCart = cart.map(item => item.id === product.id ?
                 {...item, quantity: item.quantity + 1} : item
             )
+            setModalIsOpen(true)
         } else {
             updatedCart = [...cart, {id: product.id, quantity: 1}]
+            setModalIsOpen(true)
         } 
 
         setCart(updatedCart)

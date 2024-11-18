@@ -3,7 +3,7 @@ import axios from 'axios'
 import iconBuy from '../../assets/img/icons/products/buy-icon.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
-import { CartContext, SetCartContext } from '../Contexts'
+import { CartContext, SetCartContext, SetModalIsOpenContext} from '../Contexts'
 import './Products.scss'
 import { Link } from 'react-router-dom'
 
@@ -74,6 +74,7 @@ function ProductItem ({product}) {
 
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
+    const setModalIsOpen = useContext(SetModalIsOpenContext)
 
     const handleOnClickBuy = (product) => {
         const existingProduct = cart.find(prev => prev.id === product.id)
@@ -83,8 +84,10 @@ function ProductItem ({product}) {
             updatedCart = cart.map(item => item.id === product.id ?
                 {...item, quantity: item.quantity + 1} : item
             )
+            setModalIsOpen(true)
         } else {
             updatedCart = [...cart, {id: product.id, quantity: 1}]
+            setModalIsOpen(true)
         } 
 
         setCart(updatedCart)

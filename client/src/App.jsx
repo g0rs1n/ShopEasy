@@ -6,6 +6,7 @@ import { CartContext, SetCartContext } from "./components/Contexts"
 import ProductItem from "./components/ProductItem/ProductItem"
 import Login from "./components/Login/Login"
 import SignUp from "./components/SignUp/SignUp"
+import ModalsMain from "./components/Modals/ModalsMain/ModalsMain"
 
 export default function App () {
 
@@ -41,15 +42,17 @@ export default function App () {
         <>
             <CartContext.Provider value={cart}>
                 <SetCartContext.Provider value={setCart}>
-                    <div className="wrapper">
-                        {!(location.pathname == '/login' || location.pathname == '/signup') && <Header/>}
-                        <Routes>
-                            <Route path="/" element={<ClientVerApp setProductsForCart={setProductsForCart}/>}/>
-                            <Route path="/login" element={<Login/>}/>
-                            <Route path="/signup" element={<SignUp/>}/>
-                            <Route path="/item/:id/:title" element={<ProductItem/>}/>
-                        </Routes>
-                    </div>
+                    <ModalsMain>
+                       <div className="wrapper">
+                            {!(location.pathname == '/login' || location.pathname == '/signup') && <Header/>}
+                            <Routes>
+                                <Route path="/" element={<ClientVerApp setProductsForCart={setProductsForCart}/>}/>
+                                <Route path="/login" element={<Login/>}/>
+                                <Route path="/signup" element={<SignUp/>}/>
+                                <Route path="/item/:id/:title" element={<ProductItem/>}/>
+                            </Routes>
+                        </div> 
+                    </ModalsMain>
                 </SetCartContext.Provider>
             </CartContext.Provider>
         </>
