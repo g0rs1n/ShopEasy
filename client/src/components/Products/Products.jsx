@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 import iconBuy from '../../assets/img/icons/products/buy-icon.png'
+import iconLoading from '../../assets/img/icons/loading/loading.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
 import { CartContext, SetCartContext, SetModalIsOpenContext} from '../Contexts'
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom'
 
 export default function Products ({activeTab, currentPage, setCurrentPage, setProductsForCart}) {
 
+    const [isLoading, setIsLoading] = useState(true)
     const [products, setProducts] = useState([])
     const productsPerPage = 12
 
@@ -32,6 +34,7 @@ export default function Products ({activeTab, currentPage, setCurrentPage, setPr
                 if (response) {
                     setProducts(response.data)
                     setProductsForCart(response.data)
+                    setIsLoading(false)
                 } else {
                     console.error('Error: get products api')
                 }
@@ -46,25 +49,38 @@ export default function Products ({activeTab, currentPage, setCurrentPage, setPr
     return (
         <>
             <div className='wrapper-products'>
-                <div className='products'>
-                    {
-                        currentProducts.map((product) => {
-                            return (
-                                <ProductItem
-                                    key={product.id}
-                                    product = {product}
-                                />
-                            )
-                        })
-                    }
-                </div>
-                <Paginations
-                    productsPerPage = {productsPerPage}
-                    totalProducts = {filterProducts.length}
-                    clickPaginate = {clickPaginate}
-                    setCurrentPage = {setCurrentPage}
-                    currentPage = {currentPage}
-                />
+                {
+                    isLoading ? 
+                    <>
+                        <div className='wrapper-loading-page'>
+                            <div className='loading-page'>
+                                <img className='loading-page__img' src={iconLoading} alt="loading" />
+                            </div>
+                        </div>
+                    </>
+                    :
+                    <>
+                       <div className='products'>
+                            {
+                                currentProducts.map((product) => {
+                                    return (
+                                        <ProductItem
+                                            key={product.id}
+                                            product = {product}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                        <Paginations
+                            productsPerPage = {productsPerPage}
+                            totalProducts = {filterProducts.length}
+                            clickPaginate = {clickPaginate}
+                            setCurrentPage = {setCurrentPage}
+                            currentPage = {currentPage}
+                        /> 
+                    </>
+                }
             </div>
         </>
     )
