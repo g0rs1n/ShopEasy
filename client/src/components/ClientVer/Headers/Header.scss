@@ -38,12 +38,17 @@
         column-gap: 10px;
         cursor: pointer;
 
+        &:active{
+            color: inherit;
+        }
+
         & img{
             width: 45px;
             height: 45px;
         }
 
         & p{
+            color: var(--text-color);
             font-family: var(--font-main-2);
             font-size: 19px;
             font-weight: 600;

@@ -23,10 +23,10 @@ export default function Header ({}) {
                             </Link>
                         </div>
                         <div className='wrapper-header-main'>
-                            <div className='header-cart'>
+                            <Link to={'/cart'} className='header-cart'>
                                 <img className='header-cart__img' src={iconCart} alt="img_cart" />
                                 <p className='header-cart__p'>{cart.length}</p>
-                            </div>
+                            </Link>
                             <div className="header-button">
                                 <Link className="header-button__login" to={'/login'} >Login</Link>
                             </div>

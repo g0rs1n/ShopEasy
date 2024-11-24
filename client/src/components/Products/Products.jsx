@@ -4,14 +4,14 @@ import iconBuy from '../../assets/img/icons/products/buy-icon.png'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
-import { CartContext, SetCartContext, SetModalIsOpenContext} from '../Contexts'
+import { CartContext, SetCartContext, SetModalIsOpenContext, ProductsContext, IsLoadingContext} from '../Contexts'
 import './Products.scss'
 import { Link } from 'react-router-dom'
 
-export default function Products ({activeTab, currentPage, setCurrentPage, setProductsForCart}) {
+export default function Products ({activeTab, currentPage, setCurrentPage}) {
 
-    const [isLoading, setIsLoading] = useState(true)
-    const [products, setProducts] = useState([])
+    const products = useContext(ProductsContext)
+    const isLoading = useContext(IsLoadingContext)
     const productsPerPage = 12
 
     const filterProducts = activeTab === 'All' ? products :
@@ -24,28 +24,7 @@ export default function Products ({activeTab, currentPage, setCurrentPage, setPr
     const clickPaginate = (number) => {
         setCurrentPage(number)
     }
-
-    useEffect(() => {
-        const funcGetProducts = async () => {
-            try {
-                
-                const response = await axios.get('https://fakestoreapi.com/products')
-
-                if (response) {
-                    setProducts(response.data)
-                    setProductsForCart(response.data)
-                    setIsLoading(false)
-                } else {
-                    console.error('Error: get products api')
-                }
-
-            } catch (error) {
-                console.error('Error: get products api', error)
-            }
-        }
-        funcGetProducts()
-    },[])    
-
+  
     return (
         <>
             <div className='wrapper-products'>

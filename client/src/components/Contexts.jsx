@@ -8,3 +8,8 @@ export const SetCartContext = createContext(null)
 
 export const ModalIsOpenContext = createContext(false)
 export const SetModalIsOpenContext = createContext(null)
+
+// Product Context
+
+export const ProductsContext = createContext([])
+export const IsLoadingContext = createContext(true)

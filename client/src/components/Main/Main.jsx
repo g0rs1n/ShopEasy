@@ -3,7 +3,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Products from "../Products/Products"
 import './Main.scss'
 
-export default function Main ({setProductsForCart}) {
+export default function Main () {
 
     const [activeTab, setActiveTab] = useState('All')
     const [currentPage, setCurrentPage] = useState(1)
@@ -24,7 +24,6 @@ export default function Main ({setProductsForCart}) {
                     activeTab = {activeTab}
                     currentPage = {currentPage}
                     setCurrentPage = {setCurrentPage}
-                    setProductsForCart = {setProductsForCart}
                 />
             </div>
         </>
