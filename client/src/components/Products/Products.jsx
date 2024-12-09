@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext} from 'react'
-import axios from 'axios'
 import iconBuy from '../../assets/img/icons/products/buy-icon.png'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'

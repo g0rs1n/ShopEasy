@@ -59,7 +59,7 @@ export default function App () {
                     setCart(parsedCart)
                 }
 
-            } 
+            }
     }, [])
 
     return (
