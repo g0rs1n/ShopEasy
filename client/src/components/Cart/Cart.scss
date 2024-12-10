@@ -155,8 +155,13 @@
     padding: 2px 0px;
     column-gap: 5px;
 
-    & p{
-        font-size: 17px;
+    & .cart-item-title__link{
+        font-size: 16px;
+        color: var(--text-color);
+
+        &:hover{
+            text-decoration: underline;
+        }
     }
 
     & h3{

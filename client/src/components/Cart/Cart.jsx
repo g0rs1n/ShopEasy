@@ -172,9 +172,9 @@ function CartItem ({product, filteredProducts, setTotalPrice}) {
                 </div>
                 <div className='cart-item'>
                     <div className='cart-item-title'>
-                        <p className='cart-item-title__p'>
+                        <Link to={`/item/${product.id}/${encodeURIComponent(product.title)}`} className='cart-item-title__link'>
                             {product.title}
-                        </p>
+                        </Link>
                         <h3 className='cart-item-title__h3'>
                             {product.price}
                         </h3>
