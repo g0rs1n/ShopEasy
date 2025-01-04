@@ -1,42 +1,28 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { Routes, Route, useLocation, Navigate } from "react-router-dom"
 import Header from "./components/ClientVer/Headers/Header"
 import ClientVerApp from "./ClientVerApp"
-import { CartContext, SetCartContext, ProductsContext, IsLoadingContext } from "./components/Contexts"
+import IsLoadingProvider from "./components/Contexts/ContextsIsLoading/IsLoadingProvider"
+import ProductsProvider from './components/Contexts/ContextsProducts/ProductsProvider'
+import CartProvider, {SetCartContext} from "./components/Contexts/ContextsCart/CartProvider"
 import ProductItem from "./components/ProductItem/ProductItem"
 import Login from "./components/Login/Login"
 import SignUp from "./components/SignUp/SignUp"
 import Cart from "./components/Cart/Cart"
 import ModalsMain from "./components/Modals/ModalsMain/ModalsMain"
-import axios from "axios"
+import Order from "./components/Order/Order"
+import Information from "./components/Order/Pages/Information/Information"
+import Payment from './components/Order/Pages/Payment/Payment'
+import Confirmation from './components/Order/Pages/Confirmation/Confirmation'
+import ProtectedRouteApp from "./components/ProtectedRouteApp/ProtectedRouteApp"
+import UserVerApp from "./UserVerApp"
+import { AuthStatusContext } from "./components/Contexts/ContextsIsLoginned/ContextsIsLoginned"
 
 export default function App () {
 
     const location = useLocation()
-    const [isLoading, setIsLoading] = useState(true)
-    const [products, setProducts] = useState([])
-    const [cart, setCart] = useState([])
-
-    useEffect(() => {
-        const funcGetProducts = async () => {
-            try {
-                
-                const response = await axios.get('https://fakestoreapi.com/products')
-
-                if (response) {
-                    setProducts(response.data)
-                    setIsLoading(false)
-                } else {
-                    console.error('Error: get products api')
-                }
-
-            } catch (error) {
-                console.error('Error: get products api', error)
-            }
-        }
-        funcGetProducts()
-    },[])    
-
+    const setCart = useContext(SetCartContext)
+    const authStatus = useContext(AuthStatusContext)  
 
     useEffect(() => {
             const updatedCart = localStorage.getItem('cart')
@@ -64,26 +50,35 @@ export default function App () {
 
     return (
         <>
-            <ProductsContext.Provider value={products}>
-                <IsLoadingContext.Provider value={isLoading}>
-                    <CartContext.Provider value={cart}>
-                        <SetCartContext.Provider value={setCart}>
-                            <ModalsMain>
-                                <div className="wrapper">
-                                    {!(location.pathname == '/login' || location.pathname == '/signup') && <Header/>}
-                                    <Routes>
-                                        <Route path="/" element={<ClientVerApp/>}/>
-                                        <Route path="/login" element={<Login/>}/>
-                                        <Route path="/signup" element={<SignUp/>}/>
-                                        <Route path="/item/:id/:title" element={<ProductItem/>}/>
-                                        <Route path="/cart" element={<Cart/>}/>
-                                    </Routes>
-                                </div> 
-                            </ModalsMain>
-                        </SetCartContext.Provider>
-                    </CartContext.Provider>
-                </IsLoadingContext.Provider>
-            </ProductsContext.Provider>
+            <IsLoadingProvider>
+                <ProductsProvider>
+                    <CartProvider>
+                        <ModalsMain>
+                            <div className="wrapper">
+                                {!(location.pathname == '/login' || location.pathname == '/signup' || location.pathname.startsWith('/app')) && <Header/>}
+                                <Routes>
+                                    <Route path="/" element={<ClientVerApp/>}/>
+                                    <Route path="/login" element={<Login/>}/>
+                                    <Route path="/signup" element={<SignUp/>}/>
+                                    <Route path="/item/:id/:title" element={<ProductItem/>}/>
+                                    <Route path="/cart" element={<Cart/>}/>
+                                    <Route path="/order" element={<Order/>}>
+                                        <Route index element={<Navigate to="information" replace/>}/>
+                                        <Route path="information" element={<Information/>}/>
+                                        <Route path="payment" element={<Payment/>}/>
+                                        <Route path="confirmation" element={<Confirmation/>}/>
+                                    </Route>
+                                    <Route path="/protected-app" element={<ProtectedRouteApp/>}/>
+                                    {!authStatus.isLoginned && 
+                                    <Route path="/app" element={<UserVerApp/>}>
+                                        <Route path="user/:username" />
+                                    </Route>}
+                                </Routes>
+                            </div> 
+                        </ModalsMain>
+                    </CartProvider>     
+                </ProductsProvider>
+            </IsLoadingProvider>
         </>
     )
 }

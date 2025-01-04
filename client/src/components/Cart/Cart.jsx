@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-import { CartContext, SetCartContext, ProductsContext, IsLoadingContext } from '../Contexts'
+import { CartContext, SetCartContext } from '../Contexts/ContextsCart/CartProvider'
+import { ProductsContext } from '../Contexts/ContextsProducts/ProductsProvider'
+import { IsLoadingContext } from '../Contexts/ContextsIsLoading/IsLoadingProvider'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import iconDelete from '../../assets/img/icons/cart/delete.png'
 import arrowPrev from '../../assets/img/icons/cart/arrow-prev.png'
@@ -80,7 +82,7 @@ function CartList ({filteredProducts, setTotalPrice}) {
     const navigate = useNavigate()
 
     const handleArrowPrev = () => {
-        navigate(-1)
+        navigate('/')
     }
 
     return (
@@ -221,9 +223,9 @@ function CartTotalPrice ({totalPrice, filteredProducts}) {
                         :
                         <>
                             <div className='totalPrice-button'>
-                                <p className='totalPrice-button__p'>
+                                <Link to={'/order'} className='totalPrice-button__link'>
                                     Proceed to Checkout
-                                </p>
+                                </Link>
                             </div>
                         </>
                     }

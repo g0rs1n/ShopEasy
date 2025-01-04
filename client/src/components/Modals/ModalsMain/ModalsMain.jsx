@@ -1,7 +1,9 @@
-import { useState, useEffect} from "react"
-import { ModalIsOpenContext, SetModalIsOpenContext } from "../../Contexts"
+import { useState, useEffect, createContext} from "react"
 import {Transition} from 'react-transition-group'
 import './ModalsMain.scss'
+
+export const ModalIsOpenContext = createContext(false)
+export const SetModalIsOpenContext = createContext(null)
 
 export default function ModalsMain ({children}) {
 

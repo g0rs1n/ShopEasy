@@ -25,10 +25,28 @@ export default function Login () {
     const onSubmit = async () => {
         try {
             if (formState.isValid) {
-                
+                const response = await axios.post('http://localhost:5001/api/auth/authorization', userData, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                })
+                if (response.status === 201) {
+                    navigate('/protected-app', {
+                        replace: false
+                    })
+                }
             }
         } catch (error) {
-            console.error("Error: post loginData", error)
+            if (error.response) {
+                const errorStatus = error.response.status
+                const errorMsg = error.response.data.error || 'Unknown error'
+                console.error(errorStatus, errorMsg)
+            } else if (error.request) {
+                console.error("The request was sent, but no response was received", error.request)
+            } else {
+                console.error("Error: post loginData", error)
+            }
         }
     }
 

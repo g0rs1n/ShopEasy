@@ -1,17 +1,18 @@
-import { useContext } from 'react'
-import {Link} from 'react-router-dom'
-import { CartContext } from '../../Contexts/ContextsCart/CartProvider'
-import './Header.scss'
+import { useContext } from "react"
+import { CartContext } from "../../Contexts/ContextsCart/CartProvider"
+import { Link } from "react-router-dom"
+import LayoutUserInfo from "./LayoutUserInfo"
 import iconCart from '../../../assets/img/icons/header/cart.png'
 import logo from '../../../assets/img/icons/logo/logo.png'
+import './Header.scss'
 
-export default function Header ({}) {
+export default function HeaderUser () {
 
     const cart = useContext(CartContext)
-   
+
     return (
         <>
-             <header className="header">
+            <header className="header">
                 <div className="container">
                     <div className="header__row">
                         <div className="logo">
@@ -27,9 +28,7 @@ export default function Header ({}) {
                                 <img className='header-cart__img' src={iconCart} alt="img_cart" />
                                 <p className='header-cart__p'>{cart.length}</p>
                             </Link>
-                            <div className="header-button">
-                                <Link className="header-button__login" to={'/login'} >Login</Link>
-                            </div>
+                            <LayoutUserInfo/>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { CartContext, SetCartContext, SetModalIsOpenContext } from '../Contexts'
+import { SetModalIsOpenContext } from '../Modals/ModalsMain/ModalsMain'
+import { CartContext, SetCartContext } from '../Contexts/ContextsCart/CartProvider'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import axios from 'axios'
 import './ProductItem.scss'
