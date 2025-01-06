@@ -4,7 +4,7 @@ import Header from "./components/ClientVer/Headers/Header"
 import ClientVerApp from "./ClientVerApp"
 import { SetProductsContext } from "./components/Contexts/ContextsProducts/ProductsProvider"
 import { SetIsLoadingContext } from "./components/Contexts/ContextsIsLoading/IsLoadingProvider"
-import CartProvider, {SetCartContext} from "./components/Contexts/ContextsCart/CartProvider"
+import { SetCartContext } from "./components/Contexts/ContextsCart/CartProvider"
 import ProductItem from "./components/ProductItem/ProductItem"
 import Login from "./components/Login/Login"
 import SignUp from "./components/SignUp/SignUp"
@@ -22,6 +22,7 @@ export default function App () {
     const location = useLocation()
     const setIsLoading = useContext(SetIsLoadingContext)
     const setProducts = useContext(SetProductsContext)
+    const setCart = useContext(SetCartContext)
 
     useEffect(() => {
         const funcGetProducts = async () => {
@@ -43,9 +44,33 @@ export default function App () {
         funcGetProducts()
     },[])
 
+    useEffect(() => {
+        const updatedCart = localStorage.getItem('cart')
+        const cartTimeStamp = localStorage.getItem('cartTimeStamp')
+
+        if (updatedCart && cartTimeStamp) {
+
+            const parsedCart = JSON.parse(updatedCart)
+            const currentTime = Date.now()
+            const timeDifference = currentTime - Number(cartTimeStamp)
+            const maxTimeCart = 24 * 60 * 60 * 1000
+
+            if (timeDifference > maxTimeCart) {
+
+                localStorage.removeItem('cart')
+                localStorage.removeItem('cartTimeStamp')
+                setCart([])
+
+            } else {
+                setCart(parsedCart)
+            }
+
+        }
+    }, [])
+
     return (
         <>
-            <CartProvider>
+            
                 <ModalsMain>
                     <div className="wrapper">
                         {!(location.pathname == '/login' || location.pathname == '/signup' || location.pathname.startsWith('/app')) && <Header/>}
@@ -67,7 +92,7 @@ export default function App () {
                         </Routes>
                     </div> 
                 </ModalsMain>
-            </CartProvider>     
+                
         </>
     )
 }
