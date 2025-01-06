@@ -1,5 +1,4 @@
 import {useForm} from 'react-hook-form'
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './Login.scss'
@@ -7,25 +6,26 @@ import './Login.scss'
 export default function Login () {
 
     const navigate = useNavigate()
-    const {register, handleSubmit, formState} = useForm({
+    const {register, handleSubmit, formState: { errors, isValid }} = useForm({
         mode: "onChange"
     })
-    const [userData, setUserData] = useState({})
 
-    const emailError = formState.errors.email?.message
-    const passwordError = formState.errors.password?.message
+    const emailError = errors.email
+    const passwordError = errors.password
 
-    const handleOnChange = (e) => {
-        setUserData({
-            ...userData,
-            [e.target.name]: e.target.value
-        })
+    const inputErrors = {
+        email: {
+            message: errors.email?.message || null
+        },
+        password: {
+            message: errors.password?.message
+        },
     }
 
-    const onSubmit = async () => {
+    const onSubmit = async (data) => {
         try {
-            if (formState.isValid) {
-                const response = await axios.post('http://localhost:5001/api/auth/authorization', userData, {
+            if (isValid) {
+                const response = await axios.post('http://localhost:5001/api/auth/authorization', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -72,24 +72,22 @@ export default function Login () {
                                                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                                 message: 'Invalid email type'
                                             },
-                                            onChange: handleOnChange
                                         })}
                                         />
-                                        {emailError && <p className='login-input-error__p'>{emailError}</p>}
+                                        {emailError && <p className='login-input-error__p'>{inputErrors.email.message}</p>}
                                     </div>
                                     <div className='wrapper-input-section'>
                                         <label className='login-form__label' htmlFor="password">Password</label>
                                         <input name='password' type="password" id='password' className='login-form__input'
                                         {...register("password",{
                                             required: 'This field must not be empty',
-                                            onChange: handleOnChange
                                         })}
                                         />
-                                        {passwordError && <p className='login-input-error__p'>{passwordError}</p>}
+                                        {passwordError && <p className='login-input-error__p'>{inputErrors.password.message}</p>}
                                     </div>
                                 </div>
                                 <div className='wrapper-login-button'>
-                                    <button  type='submit' className='login-form__button'>Sign in</button>
+                                    <button disabled={!isValid} type='submit' className='login-form__button'>Sign in</button>
                                 </div>
                             </form>
                         </div>

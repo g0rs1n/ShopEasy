@@ -2,11 +2,18 @@ import User from '../../models/User/User.js'
 import { Op } from 'sequelize'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import {validationResult, matchedData} from 'express-validator'
 
 export const registration = async (req, res) => {
     try {
         
-        const {name, email, password} = req.body
+        const result = validationResult(req)
+
+        if (!result.isEmpty()) {
+            return res.status(400).json({error: result.array()})
+        }
+
+        const {name, email, password} = matchedData(req)
 
         const user = await User.findOne({
             where: {
@@ -18,16 +25,14 @@ export const registration = async (req, res) => {
         })
 
         if (user) {
+            let errorMsg;
             if (user.name === name) {
-                res.status(409).json({
-                    message: "This name is already taken"
-                })
+                errorMsg = 'This name is already taken'
             }
             if (user.email === email) {
-                res.status(409).json({
-                    message: "This email is already taken"
-                })
+                errorMsg = errorMsg ? `${errorMsg} and this email is already taken` : "This email is already taken"
             }
+            return res.status(409).json({error: errorMsg})
         }
 
         const salt = bcrypt.genSaltSync(10)

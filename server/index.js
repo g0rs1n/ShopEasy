@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import dbConnect from './config/dbConnect.js'
 import SyncToDB from './models/index.js'
-import { Sequelize } from 'sequelize';
+import routes from './routes/index.js'
 
 //ConstEnv
 dotenv.config();
@@ -19,6 +19,9 @@ app.use(cors({
     credentials: true,
 }))
 app.use(cookieParser())
+
+// Routes
+app.use('/api', routes)
 
 // SyncToDB
 
