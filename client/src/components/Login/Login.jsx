@@ -32,8 +32,8 @@ export default function Login () {
                     withCredentials: true
                 })
                 if (response.status === 201) {
-                    navigate('/protected-app', {
-                        replace: false
+                    navigate('/app', {
+                        replace: true
                     })
                 }
             }

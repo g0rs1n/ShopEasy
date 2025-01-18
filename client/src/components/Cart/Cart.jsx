@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import { CartContext, SetCartContext } from '../Contexts/ContextsCart/CartProvider'
 import { ProductsContext } from '../Contexts/ContextsProducts/ProductsProvider'
-import { IsLoadingContext } from '../Contexts/ContextsIsLoading/IsLoadingProvider'
+import { UserDataContext } from '../Contexts/ContextsUserData/ContextsUserData'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import iconDelete from '../../assets/img/icons/cart/delete.png'
 import arrowPrev from '../../assets/img/icons/cart/arrow-prev.png'
@@ -12,7 +12,7 @@ export default function Cart () {
 
     const products = useContext(ProductsContext)
     const cart = useContext(CartContext)
-    const isLoading = useContext(IsLoadingContext)
+    const [isLoading, setIsLoading] = useState(true)
     const [filteredProducts, setFilteredProducts] = useState([])
     const [totalPrice, setTotalPrice] = useState(0)
     
@@ -21,6 +21,7 @@ export default function Cart () {
 
         if (!cart || !products || cart.length === 0 || products.length === 0) {
             setFilteredProducts([]);
+            setIsLoading(false)
             return;
         }
         const filteredProducts = cart.map(({id, quantity}) => {
@@ -31,6 +32,7 @@ export default function Cart () {
         const totalSum = filteredProducts.reduce((sum, product) => product ? (sum + (product.price * product.quantity)) : sum ,0)
         setFilteredProducts(filteredProducts)
         setTotalPrice(totalSum.toFixed(2))
+        setIsLoading(false)
 
     }, [cart, products]) 
     
@@ -82,7 +84,7 @@ function CartList ({filteredProducts, setTotalPrice}) {
     const navigate = useNavigate()
 
     const handleArrowPrev = () => {
-        navigate('/')
+        navigate(-1)
     }
 
     return (
@@ -137,6 +139,7 @@ function CartList ({filteredProducts, setTotalPrice}) {
 function CartItem ({product, filteredProducts, setTotalPrice}) {
 
     const setCart = useContext(SetCartContext)
+    const userData = useContext(UserDataContext)
 
     const updateCart = (updatedCart) => {
         setCart(updatedCart)
@@ -174,7 +177,7 @@ function CartItem ({product, filteredProducts, setTotalPrice}) {
                 </div>
                 <div className='cart-item'>
                     <div className='cart-item-title'>
-                        <Link to={`/item/${product.id}/${encodeURIComponent(product.title)}`} className='cart-item-title__link'>
+                        <Link to={`${Object.keys(userData).length === 0 ? `/item/${product.id}/${encodeURIComponent(product.title)}` : `/app/item/${product.id}/${encodeURIComponent(product.title)}`}`} className='cart-item-title__link'>
                             {product.title}
                         </Link>
                         <h3 className='cart-item-title__h3'>
@@ -207,6 +210,9 @@ function CartItem ({product, filteredProducts, setTotalPrice}) {
 }
 
 function CartTotalPrice ({totalPrice, filteredProducts}) {
+
+    const userData = useContext(UserDataContext)
+
     return (
         <>
             <div className="wrapper-cart-totalPrice">
@@ -223,7 +229,7 @@ function CartTotalPrice ({totalPrice, filteredProducts}) {
                         :
                         <>
                             <div className='totalPrice-button'>
-                                <Link to={'/order'} className='totalPrice-button__link'>
+                                <Link to={`${Object.keys(userData).length === 0 ? '/order' : '/app/order'}`} className='totalPrice-button__link'>
                                     Proceed to Checkout
                                 </Link>
                             </div>

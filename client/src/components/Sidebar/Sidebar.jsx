@@ -1,33 +1,14 @@
-import { useState, useEffect } from "react"
-import axios from 'axios'
+import { useContext } from "react"
 import heart from '../../assets/img/icons/footer/heart.png'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
+import { CategoryContext } from "../Contexts/ContextsProducts/ProductsProvider"
+import { IsLoadingContext } from "../Contexts/ContextsIsLoading/IsLoadingProvider"
 import './Sidebar.scss'
 
 export default function Sidebar ({updateTab}) {
 
-    const [category, setCategory] = useState(['All'])
-    const [isLoading, setIsLoading] = useState(true)
-    
-    useEffect(() => {
-        const funcGetCategory = async () => {
-            try {
-                
-                const response = await axios.get('https://fakestoreapi.com/products/categories')
-
-                if (response) {
-                    setCategory([...category,...response.data])
-                    setIsLoading(false)
-                } else {
-                    console.error('Error: get all category api')
-                }
-
-            } catch (error) {
-                console.error('Error: get all cetegory api', error)
-            }
-        }
-        funcGetCategory()
-    },[])
+    const category = useContext(CategoryContext)
+    const isLoading = useContext(IsLoadingContext)
 
     return (
         <>

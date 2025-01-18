@@ -1,13 +1,12 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
-import { useNavigate, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import UserVerApp from "../../UserVerApp"
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import './ProtectedRouteApp.scss'
 
 export default function ProtectedRouteApp () {
 
-    const navigate = useNavigate()
     const [authStatus, setAuthStatus] = useState({
         errorLogin: null,
         isLoginned: false,

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import arrowPrev from '../../assets/img/icons/cart/arrow-prev.png'
-import IsActivePage from '../Contexts/ContextsOrder/ContextsOrder'
+import {CheckIsActivePageContext} from '../Contexts/ContextsOrder/ContextsOrder'
+import { UserDataContext } from '../Contexts/ContextsUserData/ContextsUserData'
 import './Order.scss'
 
 export default function Order () {
@@ -13,6 +14,7 @@ export default function Order () {
         pages2: false,
         pages3: false,
     })
+    const userData = useContext(UserDataContext)
 
     const checkIsActivePage = () => {
         location.pathname.endsWith('/information') ? setActivePages({...activePages, pages1: true, pages2: false, pages3: false}) : null
@@ -21,15 +23,15 @@ export default function Order () {
     }
 
     const handleClickToFirstPage = () => {
-        navigate('/order/information')
+        navigate(`${Object.keys(userData).length === 0 ? '/order/information' : '/app/order/information'}`)
         setActivePages({...activePages, pages1: true, pages2: false, pages3: false})
     }
     const handleClickToSecondPage = () => {
-        navigate('/order/payment')
+        navigate(`${Object.keys(userData).length === 0 ? '/order/payment' : '/app/order/payment'}`)
         setActivePages({...activePages, pages1: true, pages2: true, pages3: false})
     }
     const handleClickToLastPage = () => {
-        navigate('/order/confirmation')
+        navigate(`${Object.keys(userData).length === 0 ? '/order/confirmation' : '/app/order/confirmation'}`)
         setActivePages({...activePages, pages1: true, pages2: true, pages3: true})
     }
     
@@ -38,7 +40,7 @@ export default function Order () {
         setActivePages({...activePages, pages1: true, pages2: true, pages3: false})
     }
     const handleArrowPrev = () => {
-        navigate('/cart')
+        navigate(-1)
     }
 
     return (
@@ -71,9 +73,9 @@ export default function Order () {
                         </div>
                     </div>
                     <div className='pages'>
-                        <IsActivePage checkIsActivePage={checkIsActivePage}>
+                        <CheckIsActivePageContext.Provider value={checkIsActivePage}>
                             <Outlet/>  
-                        </IsActivePage>
+                        </CheckIsActivePageContext.Provider>
                     </div>
                 </div>
             </div>

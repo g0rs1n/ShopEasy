@@ -4,16 +4,23 @@ import iconLoading from '../../assets/img/icons/loading/loading.png'
 import arrowPrev from '../../assets/img/icons/paginations/left-arrow.png'
 import arrowNext from '../../assets/img/icons/paginations/right-arrow.png'
 import { IsLoadingContext } from '../Contexts/ContextsIsLoading/IsLoadingProvider'
-import { ProductsContext } from '../Contexts/ContextsProducts/ProductsProvider'
+import { ProductsContext, SetProductsContext } from '../Contexts/ContextsProducts/ProductsProvider'
+import { SetIsLoadingContext } from '../Contexts/ContextsIsLoading/IsLoadingProvider'
 import { SetModalIsOpenContext } from '../Modals/ModalsMain/ModalsMain'
 import { CartContext, SetCartContext } from '../Contexts/ContextsCart/CartProvider'
+import { UserDataContext } from '../Contexts/ContextsUserData/ContextsUserData'
+import { SetCategoryContext } from '../Contexts/ContextsProducts/ProductsProvider'
 import './Products.scss'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 export default function Products ({activeTab, currentPage, setCurrentPage}) {
 
     const products = useContext(ProductsContext)
     const isLoading = useContext(IsLoadingContext)
+    const setIsLoading = useContext(SetIsLoadingContext)
+    const setProducts = useContext(SetProductsContext)
+    const setCategory = useContext(SetCategoryContext)
     const productsPerPage = 12
 
     const filterProducts = activeTab === 'All' ? products :
@@ -22,6 +29,31 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = filterProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    useEffect(() => {
+        const funcGetProducts = async () => {
+            try {
+                
+                const productsResponse = await axios.get('https://fakestoreapi.com/products')
+                const categoriesResponse = await axios.get('https://fakestoreapi.com/products/categories')
+
+                if (productsResponse.status === 200 && categoriesResponse.status === 200) {
+                    setProducts(productsResponse.data)
+                    setCategory(prevCategory => {
+                        const uniqueCategories = [...new Set([...prevCategory,...categoriesResponse.data])]
+                        return uniqueCategories;
+                    })
+                    setIsLoading(false)
+                } else {
+                    console.error('Error: get products api')
+                }
+
+            } catch (error) {
+                console.error('Error: get products api', error)
+            }
+        }
+        funcGetProducts()
+    },[])
 
     const clickPaginate = (number) => {
         setCurrentPage(number)
@@ -41,25 +73,27 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
                     </>
                     :
                     <>
-                       <div className='products'>
-                            {
-                                currentProducts.map((product) => {
-                                    return (
-                                        <ProductItem
-                                            key={product.id}
-                                            product = {product}
-                                        />
-                                    )
-                                })
-                            }
-                        </div>
-                        <Paginations
-                            productsPerPage = {productsPerPage}
-                            totalProducts = {filterProducts.length}
-                            clickPaginate = {clickPaginate}
-                            setCurrentPage = {setCurrentPage}
-                            currentPage = {currentPage}
-                        /> 
+                        <div className='products-wrapper'>
+                            <div className='products'>
+                                {
+                                    currentProducts.map((product) => {
+                                        return (
+                                            <ProductItem
+                                                key={product.id}
+                                                product = {product}
+                                            />
+                                        )
+                                    })
+                                }
+                            </div>
+                            <Paginations
+                                productsPerPage = {productsPerPage}
+                                totalProducts = {filterProducts.length}
+                                clickPaginate = {clickPaginate}
+                                setCurrentPage = {setCurrentPage}
+                                currentPage = {currentPage}
+                            /> 
+                        </div> 
                     </>
                 }
             </div>
@@ -72,6 +106,7 @@ function ProductItem ({product}) {
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
     const setModalIsOpen = useContext(SetModalIsOpenContext)
+    const userData = useContext(UserDataContext)
 
     const handleOnClickBuy = (product) => {
         const existingProduct = cart.find(prev => prev.id === product.id)
@@ -104,7 +139,7 @@ function ProductItem ({product}) {
                 </div>
                 <div className='products-item-main'>
                    <div className='product-item-title'>
-                        <Link to={`/item/${product.id}/${encodeURIComponent(product.title)}`} className="product-item-title__link">
+                        <Link to={`${Object.keys(userData).length === 0 ? `/item/${product.id}/${encodeURIComponent(product.title)}` : `/app/item/${product.id}/${encodeURIComponent(product.title)}`}`} className="product-item-title__link">
                             {product.title}
                         </Link>
                     </div>
