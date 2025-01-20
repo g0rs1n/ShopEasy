@@ -18,9 +18,9 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
 
     const products = useContext(ProductsContext)
     const isLoading = useContext(IsLoadingContext)
-    const setIsLoading = useContext(SetIsLoadingContext)
-    const setProducts = useContext(SetProductsContext)
-    const setCategory = useContext(SetCategoryContext)
+    // const setIsLoading = useContext(SetIsLoadingContext)
+    // const setProducts = useContext(SetProductsContext)
+    // const setCategory = useContext(SetCategoryContext)
     const productsPerPage = 12
 
     const filterProducts = activeTab === 'All' ? products :
@@ -30,30 +30,30 @@ export default function Products ({activeTab, currentPage, setCurrentPage}) {
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = filterProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-    useEffect(() => {
-        const funcGetProducts = async () => {
-            try {
+    // useEffect(() => {
+    //     const funcGetProducts = async () => {
+    //         try {
                 
-                const productsResponse = await axios.get('https://fakestoreapi.com/products')
-                const categoriesResponse = await axios.get('https://fakestoreapi.com/products/categories')
+    //             const productsResponse = await axios.get('https://fakestoreapi.com/products')
+    //             const categoriesResponse = await axios.get('https://fakestoreapi.com/products/categories')
 
-                if (productsResponse.status === 200 && categoriesResponse.status === 200) {
-                    setProducts(productsResponse.data)
-                    setCategory(prevCategory => {
-                        const uniqueCategories = [...new Set([...prevCategory,...categoriesResponse.data])]
-                        return uniqueCategories;
-                    })
-                    setIsLoading(false)
-                } else {
-                    console.error('Error: get products api')
-                }
+    //             if (productsResponse.status === 200 && categoriesResponse.status === 200) {
+    //                 setProducts(productsResponse.data)
+    //                 setCategory(prevCategory => {
+    //                     const uniqueCategories = [...new Set([...prevCategory,...categoriesResponse.data])]
+    //                     return uniqueCategories;
+    //                 })
+    //                 setIsLoading(false)
+    //             } else {
+    //                 console.error('Error: get products api')
+    //             }
 
-            } catch (error) {
-                console.error('Error: get products api', error)
-            }
-        }
-        funcGetProducts()
-    },[])
+    //         } catch (error) {
+    //             console.error('Error: get products api', error)
+    //         }
+    //     }
+    //     funcGetProducts()
+    // },[])
 
     const clickPaginate = (number) => {
         setCurrentPage(number)

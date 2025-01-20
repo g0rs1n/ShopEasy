@@ -16,11 +16,17 @@ import Confirmation from './components/Order/Pages/Confirmation/Confirmation'
 import ProtectedRouteApp from "./components/ProtectedRouteApp/ProtectedRouteApp"
 import Main from "./components/Main/Main"
 import UserPanel from "./components/UserVer/UserPanel/UserPanel"
+import { SetProductsContext, SetCategoryContext } from "./components/Contexts/ContextsProducts/ProductsProvider"
+import { SetIsLoadingContext } from "./components/Contexts/ContextsIsLoading/IsLoadingProvider"
+import axios from "axios"
 
 export default function App () {
 
     const location = useLocation()
     const setCart = useContext(SetCartContext)
+    const setProducts = useContext(SetProductsContext)
+    const setCategory = useContext(SetCategoryContext)
+    const setIsLoading = useContext(SetIsLoadingContext)
 
     useEffect(() => {
         const updatedCart = localStorage.getItem('cart')
@@ -45,6 +51,31 @@ export default function App () {
 
         }
     }, [])
+
+    useEffect(() => {
+        const funcGetProducts = async () => {
+            try {
+                
+                const productsResponse = await axios.get('https://fakestoreapi.com/products')
+                const categoriesResponse = await axios.get('https://fakestoreapi.com/products/categories')
+
+                if (productsResponse.status === 200 && categoriesResponse.status === 200) {
+                    setProducts(productsResponse.data)
+                    setCategory(prevCategory => {
+                        const uniqueCategories = [...new Set([...prevCategory,...categoriesResponse.data])]
+                        return uniqueCategories;
+                    })
+                    setIsLoading(false)
+                } else {
+                    console.error('Error: get products api')
+                }
+
+            } catch (error) {
+                console.error('Error: get products api', error)
+            }
+        }
+        funcGetProducts()
+    },[])
 
     return (
         <>

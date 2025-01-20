@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import { CartContext, SetCartContext } from '../Contexts/ContextsCart/CartProvider'
 import { ProductsContext } from '../Contexts/ContextsProducts/ProductsProvider'
 import { UserDataContext } from '../Contexts/ContextsUserData/ContextsUserData'
+import {IsLoadingContext} from '../Contexts/ContextsIsLoading/IsLoadingProvider'
 import iconLoading from '../../assets/img/icons/loading/loading.png'
 import iconDelete from '../../assets/img/icons/cart/delete.png'
 import arrowPrev from '../../assets/img/icons/cart/arrow-prev.png'
@@ -12,6 +13,7 @@ export default function Cart () {
 
     const products = useContext(ProductsContext)
     const cart = useContext(CartContext)
+    const productsIsLoading = useContext(IsLoadingContext)
     const [isLoading, setIsLoading] = useState(true)
     const [filteredProducts, setFilteredProducts] = useState([])
     const [totalPrice, setTotalPrice] = useState(0)
@@ -19,22 +21,26 @@ export default function Cart () {
 
     useEffect(() => {
 
-        if (!cart || !products || cart.length === 0 || products.length === 0) {
+        if (!cart || cart.length === 0) {
             setFilteredProducts([]);
-            setIsLoading(false)
+            setIsLoading(false);
+        }
+
+        if (productsIsLoading) {
+            setIsLoading(true)
             return;
         }
+        
         const filteredProducts = cart.map(({id, quantity}) => {
             const product = products.find(product => product.id === id)
             return product ? {...product, quantity} : null
         })
-        
         const totalSum = filteredProducts.reduce((sum, product) => product ? (sum + (product.price * product.quantity)) : sum ,0)
         setFilteredProducts(filteredProducts)
         setTotalPrice(totalSum.toFixed(2))
         setIsLoading(false)
-
-    }, [cart, products]) 
+        
+    }, [cart, products, productsIsLoading]) 
     
     return (
         <>

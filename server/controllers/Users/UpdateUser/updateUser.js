@@ -1,10 +1,17 @@
 import User from "../../../models/User/User.js"
 import jwt from 'jsonwebtoken'
+import { validationResult, matchedData } from "express-validator"
 
 export const updateUser = async (req, res) => {
     try {
         
-        const newUserData = req.body.newUserData
+        const result = validationResult(req)
+
+        if (!result.isEmpty()) {
+            return res.status(400).json({error: result.array()})
+        }
+
+        const editUserData = matchedData(req, { includeOptionals: true })
         const token = req.cookies.token
         const decodedToken = jwt.decode(token)
         const userId = decodedToken.id
@@ -19,14 +26,14 @@ export const updateUser = async (req, res) => {
 
         const fieldsToUpdate = {}
 
-        for (const key in newUserData) {
-            if (newUserData[key] !== currentUser[key]){
-                fieldsToUpdate[key] = newUserData[key]
+        for (const key in editUserData) {
+            if (editUserData[key] !== currentUser[key]){
+                fieldsToUpdate[key] = editUserData[key]
             }
         }
 
         if (Object.keys(fieldsToUpdate).length === 0) {
-            return res.status(400).json({
+            return res.status(204).json({
                 error: 'No changes detected'
             })
         }
@@ -38,15 +45,17 @@ export const updateUser = async (req, res) => {
 
         if (updatedRowCount === 0) {
             return res.status(404).json({
-                error: 'User not found'
+                error: 'Failed to update user'
             })
         }
 
-        const updatedUser = updatedRows[0]
+        const {password, ...updatedSafeUser} = updatedRows[0].dataValues
+
+        console.log(updatedSafeUser)
 
         res.status(200).json({
             message: 'User updated successfully',
-            updatedUser: updatedUser
+            updatedUser: updatedSafeUser
         })
 
     } catch (error) {

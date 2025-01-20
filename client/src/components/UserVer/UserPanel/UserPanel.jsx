@@ -62,11 +62,7 @@ function TabsContentOne () {
     const userData = useContext(UserDataContext)
     const setUserData = useContext(SetUserDataContext)
     const [editButton, setEditButton] = useState(true)
-    const [editUserData, setEditUserData] = useState({
-        name: 'Data is not available',
-        email: 'Data is not available',
-        phone: 'Data is not available',
-    })
+    const [editUserData, setEditUserData] = useState({})
     
     useEffect(() => {
         if(userData){
@@ -89,11 +85,11 @@ function TabsContentOne () {
     const updateUserData = async () => {
         try {
 
-            const response = await axios.patch('http://localhost:5001/api/users/me/profile',{newUserData: editUserData},{
+            const response = await axios.patch('http://localhost:5001/api/users/me/profile',editUserData,{
                 headers:{
                     'Content-Type': 'application/json'
                 },
-                withCredentials: true,
+                withCredentials: true
             })
             if (response.status === 200) {
                 setUserData(response.data.updatedUser)
@@ -142,8 +138,8 @@ function TabsContentOne () {
                 </UserPageTitle>
                 <UserPage>
                     <UserName>Name: {!editButton ? <InputChange onChange={handleChangeUser} name='name' value={editUserData.name || ''} type='text'/> : editUserData.name}</UserName>
-                    <UserEmail>Email: {!editButton ? <InputChange onChange={handleChangeUser} value={editUserData.email || ''} name='email' type='text'/> : editUserData.email}</UserEmail>
-                    <UserPhone>Phone: {!editButton ? <InputChange onChange={handleChangeUser} value={editUserData.phone || ''} name='phone' type='text'/> : editUserData.phone || 'Data is not available'}</UserPhone>
+                    <UserEmail>Email: {!editButton ? <InputChange onChange={handleChangeUser} value={editUserData.email || ''} name='email' type='email'/> : editUserData.email}</UserEmail>
+                    <UserPhone>Phone: {!editButton ? <InputChange onChange={handleChangeUser} value={editUserData.phone || ''} name='phone' type='text'/> : editUserData.phone || 'Phone is not available'}</UserPhone>
                 </UserPage>
                 <UserPageButton>
                     <ChangeButton onClick={handleEditButtonClick}>{editButton ? 'Edit' : 'Save'}</ChangeButton>

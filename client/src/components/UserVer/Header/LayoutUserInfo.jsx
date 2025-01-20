@@ -34,11 +34,11 @@ export default function LayoutUserInfo () {
 
     return (
         <>
-            <Link to={`/app/user/${userData.name}`}>
+            <Link to={`/app/user/${userData.name ? userData.name : 'User'}`}>
                 <div className="userinfo-button">
                     <div className="userinfo-name">
                         <p className="userinfo-name__p">
-                            {userData.name}
+                            {userData.name ? userData.name : 'User'}
                         </p>
                     </div>
                 </div>
