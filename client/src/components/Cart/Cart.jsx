@@ -77,6 +77,7 @@ function CartList ({filteredProducts, setTotalPrice}) {
 
     const cart = useContext(CartContext)
     const setCart = useContext(SetCartContext)
+    const userData = useContext(UserDataContext)
 
     const handleDeleteAll = () => {
         if (cart.length != 0) {
@@ -90,7 +91,7 @@ function CartList ({filteredProducts, setTotalPrice}) {
     const navigate = useNavigate()
 
     const handleArrowPrev = () => {
-        navigate(-1)
+        navigate(`${Object.keys(userData).length === 0 ? '/' : '/app'}`)
     }
 
     return (
