@@ -225,7 +225,7 @@ function CartTotalPrice ({totalPrice, filteredProducts}) {
             <div className="wrapper-cart-totalPrice">
                 <div className='cart-totalPrice'>
                     {
-                        filteredProducts.length === 0 ? 
+                        (filteredProducts.length === 0 || parseFloat(totalPrice) === 0) ? 
                         <>
                             <div className='totalPrice-button-none'>
                                 <p className='totalPrice-button-none__h3'>
