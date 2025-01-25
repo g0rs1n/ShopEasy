@@ -1,5 +1,23 @@
 import styled from 'styled-components'
 
+// BaseStyles
+
+const FieldsWrapperBase = styled.div`
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+`
+const WrapperTitleBase = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+`
+
+const TitleBase = styled.h3`
+    font-size: 21px;
+    font-weight: 500;
+`
+
 // Main Information Page
 
 export const StyledMain = {
@@ -26,20 +44,9 @@ export const StyledUser = {
         padding: 10px;
         border: 1px solid blue;
     `,
-    UserInformationFields: styled.div`
-        display: flex;
-        flex-direction: column;
-        row-gap: 20px;
-    `,
-    WrapperUserTitle: styled.div`
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    `,
-    Title: styled.h3`
-        font-size: 21px;
-        font-weight: 500;
-    `,
+    UserInformationFields: styled(FieldsWrapperBase)``,
+    WrapperUserTitle: styled(WrapperTitleBase)``,
+    Title: styled(TitleBase)``,
     WrapperUserFields: styled.div`
         display: flex;
         flex-direction: column;
@@ -74,8 +81,46 @@ export const StyledUser = {
 // DeliveryType
 
 export const StyledDelivery = {
-    DeliveryTypeWrapper: styled.div``,
-    DeliveryTypeFields: styled.div``,
+    DeliveryTypeWrapper: styled.div`
+        padding: 10px;
+        border: 1px solid blue;
+    `,
+    DeliveryTypeFields: styled(FieldsWrapperBase)``,
+    WrapperTitle: styled(WrapperTitleBase)``,
+    Title: styled(TitleBase)``,
+    WrapperOptions: styled(FieldsWrapperBase)`
+        row-gap: 15px;
+    `,
+    LabelWrapper: styled.label`
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+    `,
+    RadioInput: styled.input`
+        display: none; 
+  
+        &:checked + label::before {
+            background-color: #1477cd;
+        }
+    `,
+    RadioLabel: styled.label`
+        display: flex;
+        align-items: center;
+        column-gap: 10px;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            display: block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid rgb(201, 198, 198);
+            transition: background-color 0.3s ease, border 0.3s ease;
+        }
+    `,
+    Span: styled.span``,
 }
 
 // ExtraFields

@@ -17,6 +17,7 @@ export default function Information () {
     const checkIsActivePage = useContext(CheckIsActivePageContext)
     const setOrderData = useContext(SetOrderDataContext)
     const userData = useContext(UserDataContext)
+    const [informationFormData, setInformationFormData] = useState(userData || {})
     const { register, reset, handleSubmit, formState: {errors, isValid} } = useForm({
         mode: "onChange",
         defaultValues: userData || {},
@@ -56,6 +57,7 @@ export default function Information () {
                         <UserInformation
                             register={register}
                             inputsErrors={inputsErrors}
+                            setInformationFormData={setInformationFormData}
                         />
                         <DeliveryType/>
                         <ExtraFields/>
@@ -66,7 +68,16 @@ export default function Information () {
     )
 }
 
-function UserInformation ({register, inputsErrors}) {
+function UserInformation ({register, inputsErrors, setInformationFormData}) {
+
+    const handleOnChangeInformationFormData = (e) => {
+        const {name, value} = e.target;
+        setInformationFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
+    }
+
     return (
         <>
             <SU.UserInformationWrapper>
@@ -84,6 +95,7 @@ function UserInformation ({register, inputsErrors}) {
                             validationRules={{
                                 required: 'This field must not be empty'
                             }}
+                            onChange={handleOnChangeInformationFormData}
                         />
                         <FormField 
                             label={'Surname'} 
@@ -94,6 +106,7 @@ function UserInformation ({register, inputsErrors}) {
                             validationRules={{
                                 required: 'This field must not be empty'
                             }}
+                            onChange={handleOnChangeInformationFormData}
                         />
                         <FormField 
                             label={'Phone'} 
@@ -104,6 +117,7 @@ function UserInformation ({register, inputsErrors}) {
                             validationRules={{
                                 required: 'This field must not be empty'
                             }}
+                            onChange={handleOnChangeInformationFormData}
                         />
                         <FormField 
                             label={'Email'} 
@@ -118,6 +132,7 @@ function UserInformation ({register, inputsErrors}) {
                                     message: 'Invalid email type',
                                 },
                             }}
+                            onChange={handleOnChangeInformationFormData}
                         />
                     </SU.WrapperUserFields>
                 </SU.UserInformationFields>
@@ -126,16 +141,23 @@ function UserInformation ({register, inputsErrors}) {
     )
 }
 
-function FormField ({label, type, name, inputsErrors, register, validationRules}) {
+function FormField ({label, type, name, inputsErrors, register, validationRules, onChange}) {
 
     const fieldError = inputsErrors?.[name]?.message;
+
+    const handleOnChange = (e) => {
+        if (onChange) onChange(e)
+    }
 
     return (
         <>
             <SU.WrapperField>
                 <SU.LabelField htmlFor={label}>{label}</SU.LabelField>
                 <SU.Input id={label} name={name} type={type} autoComplete='off'
-                    {...register(name, validationRules)}
+                    {...register(name, {
+                        ...validationRules,
+                        onChange: (e) => handleOnChange(e)
+                    })}
                 />
                 {fieldError && <SU.Span>{fieldError}</SU.Span>}
             </SU.WrapperField>
@@ -144,13 +166,56 @@ function FormField ({label, type, name, inputsErrors, register, validationRules}
 }
 
 function DeliveryType () {
+
+    const [deliveryType, setDeliveryType] = useState(null)
+
+    const handleOnChangeDeliveryType = (e) => {
+        const type = e.target.value
+        setDeliveryType((prev) => {type === deliveryType ? prev : type})
+    }
+
     return (
         <>
             <SD.DeliveryTypeWrapper>
                 <SD.DeliveryTypeFields>
-
+                    <SD.WrapperTitle>
+                        <SD.Title>Choose a delivery type</SD.Title>
+                    </SD.WrapperTitle>
+                    <SD.WrapperOptions>
+                        <OptionType
+                            type={'Delivery type 1'}
+                            onChange={handleOnChangeDeliveryType}
+                            value={'typeOne'}
+                        />
+                        <OptionType
+                            type={'Delivery type 2'}
+                            onChange={handleOnChangeDeliveryType}
+                            value={'typeTwo'}
+                        />  
+                    </SD.WrapperOptions>
                 </SD.DeliveryTypeFields>
             </SD.DeliveryTypeWrapper>
+        </>
+    )
+}
+
+function OptionType ({type, onChange, value}) {
+    return (
+        <>
+            <SD.LabelWrapper>
+                <SD.RadioInput value={value} id={value} onChange={(e) => onChange(e)} name='type' type='radio'/>
+                <SD.RadioLabel htmlFor={value}>
+                    <SD.Span>{type}</SD.Span>
+                </SD.RadioLabel>
+            </SD.LabelWrapper>
+        </>
+    )
+}
+
+function DeliveryMenu () {
+    return (
+        <>
+            
         </>
     )
 }
