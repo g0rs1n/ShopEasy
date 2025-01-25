@@ -22,6 +22,21 @@ export default function Information () {
         defaultValues: userData || {},
     })
 
+    const inputsErrors = {
+        name: {
+            message: errors.name?.message || null
+        },
+        surname: {
+            message: errors.surname?.message || null
+        },
+        phone: {
+            message: errors.phone?.message || null
+        },
+        email: {
+            message: errors.email?.message || null
+        },
+    }
+
     useEffect(() => {
         checkIsActivePage()
     }, [])
@@ -38,7 +53,10 @@ export default function Information () {
             <SM.WrapperInformationPage>
                 <SM.InformationPage>
                     <SM.InformationForm>
-                        <UserInformation/>
+                        <UserInformation
+                            register={register}
+                            inputsErrors={inputsErrors}
+                        />
                         <DeliveryType/>
                         <ExtraFields/>
                     </SM.InformationForm>
@@ -48,7 +66,7 @@ export default function Information () {
     )
 }
 
-function UserInformation () {
+function UserInformation ({register, inputsErrors}) {
     return (
         <>
             <SU.UserInformationWrapper>
@@ -61,21 +79,45 @@ function UserInformation () {
                             label={'Name'} 
                             type={'text'} 
                             name={'name'}
+                            inputsErrors={inputsErrors}
+                            register={register}
+                            validationRules={{
+                                required: 'This field must not be empty'
+                            }}
                         />
                         <FormField 
                             label={'Surname'} 
                             type={'text'} 
                             name={'surname'}
+                            inputsErrors={inputsErrors}
+                            register={register}
+                            validationRules={{
+                                required: 'This field must not be empty'
+                            }}
                         />
                         <FormField 
                             label={'Phone'} 
                             type={'text'} 
                             name={'phone'}
+                            inputsErrors={inputsErrors}
+                            register={register}
+                            validationRules={{
+                                required: 'This field must not be empty'
+                            }}
                         />
                         <FormField 
                             label={'Email'} 
                             type={'email'} 
                             name={'email'}
+                            inputsErrors={inputsErrors}
+                            register={register}
+                            validationRules={{
+                                required: 'Invalid email type',
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: 'Invalid email type',
+                                },
+                            }}
                         />
                     </SU.WrapperUserFields>
                 </SU.UserInformationFields>
@@ -84,12 +126,18 @@ function UserInformation () {
     )
 }
 
-function FormField ({label, type, name}) {
+function FormField ({label, type, name, inputsErrors, register, validationRules}) {
+
+    const fieldError = inputsErrors?.[name]?.message;
+
     return (
         <>
             <SU.WrapperField>
                 <SU.LabelField htmlFor={label}>{label}</SU.LabelField>
-                <SU.Input id={label} name={name} type={type} autoComplete='off'/>
+                <SU.Input id={label} name={name} type={type} autoComplete='off'
+                    {...register(name, validationRules)}
+                />
+                {fieldError && <SU.Span>{fieldError}</SU.Span>}
             </SU.WrapperField>
         </>
     )

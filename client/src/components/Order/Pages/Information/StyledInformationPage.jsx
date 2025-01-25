@@ -64,6 +64,11 @@ export const StyledUser = {
             border: 1px solid rgba(123, 123, 123, 1.0);
         }
     `,
+    Span: styled.span`
+        font-size: 12px;
+        font-weight: 500;
+        color: red;
+    `,
 }
 
 // DeliveryType
