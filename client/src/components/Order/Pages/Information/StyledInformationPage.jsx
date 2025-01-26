@@ -26,8 +26,9 @@ export const StyledMain = {
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100vh;
-    padding: 20px 50px;`,
+    height: 100%;
+    padding: 20px 50px;
+    `,
     InformationForm: styled.form`
     width: 100%;
     padding: 10px;
@@ -121,6 +122,22 @@ export const StyledDelivery = {
         }
     `,
     Span: styled.span``,
+    MenuWrapper: styled.div`
+        margin-left: 30px;
+        border-radius: 10px;
+        border: 2px solid rgba(188, 186, 186, 0.96);
+    `,
+    Menu: styled.div`
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+    `,
+    MenuTitle: styled.h3`
+        font-weight: 500;
+    `,
+    MenuFieldSelect: styled.select``,
+    MenuFieldOption: styled.option``,
 }
 
 // ExtraFields

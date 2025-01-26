@@ -4,6 +4,8 @@ import { CheckIsActivePageContext } from '../../../Contexts/ContextsOrder/Contex
 import {SetOrderDataContext } from '../../../Contexts/ContextsOrder/ContextsOrder'
 import {UserDataContext} from '../../../Contexts/ContextsUserData/ContextsUserData'
 import { StyledMain as SM, StyledUser as SU, StyledDelivery as SD, StyledExtra as SE} from './StyledInformationPage'
+import { cityDb, deliveryDb } from '../../../../db/db'
+import Select from 'react-select'
 
 const defaultValues = {
     name: "",
@@ -165,13 +167,35 @@ function FormField ({label, type, name, inputsErrors, register, validationRules,
     )
 }
 
+function OptionType ({type, onChange, value}) {
+    return (
+        <>
+            <SD.LabelWrapper>
+                <SD.RadioInput onChange={(e) => onChange(e)} value={value} id={value} name='type' type='radio'/>
+                <SD.RadioLabel htmlFor={value}>
+                    <SD.Span>{type}</SD.Span>
+                </SD.RadioLabel>
+            </SD.LabelWrapper>
+        </>
+    )
+}
+
 function DeliveryType () {
 
     const [deliveryType, setDeliveryType] = useState(null)
+    const [cities, setCities] = useState(cityDb[0] || [])
+    const [departments, setDepartments] = useState(deliveryDb[0] || [])
+
+    useEffect(() => {
+        if (cityDb) setCities(cityDb)
+        if (deliveryDb) setDepartments(deliveryDb)
+    }, [cityDb, deliveryDb])
 
     const handleOnChangeDeliveryType = (e) => {
         const type = e.target.value
-        setDeliveryType((prev) => {type === deliveryType ? prev : type})
+        setDeliveryType((prev) => (type === prev ? prev : type))
+        const filteredDepartments = deliveryDb.filter((department) => department.type === type)
+        setDepartments(filteredDepartments)
     }
 
     return (
@@ -187,11 +211,23 @@ function DeliveryType () {
                             onChange={handleOnChangeDeliveryType}
                             value={'typeOne'}
                         />
+                        {deliveryType === "typeOne" && 
+                            <DeliveryMenu
+                                cities={cities}
+                                departments={departments}
+                            />
+                        }
                         <OptionType
                             type={'Delivery type 2'}
                             onChange={handleOnChangeDeliveryType}
                             value={'typeTwo'}
-                        />  
+                        />
+                        {deliveryType === "typeTwo" && 
+                            <DeliveryMenu
+                                cities={cities}
+                                departments={departments}
+                            />
+                        } 
                     </SD.WrapperOptions>
                 </SD.DeliveryTypeFields>
             </SD.DeliveryTypeWrapper>
@@ -199,23 +235,77 @@ function DeliveryType () {
     )
 }
 
-function OptionType ({type, onChange, value}) {
-    return (
-        <>
-            <SD.LabelWrapper>
-                <SD.RadioInput value={value} id={value} onChange={(e) => onChange(e)} name='type' type='radio'/>
-                <SD.RadioLabel htmlFor={value}>
-                    <SD.Span>{type}</SD.Span>
-                </SD.RadioLabel>
-            </SD.LabelWrapper>
-        </>
-    )
-}
+function DeliveryMenu ({cities, departments}) {
 
-function DeliveryMenu () {
+    const [selectedCity, setSelectedCity] = useState(null)
+    const [selectedDepartment, setSelectedDepartment] = useState(null)
+    const [departmentOptions, setDepartmentOptions] = useState([])
+    const cityOptions = cities.map((city) => ({value: city, label: city}))
+    
+    useEffect(() => {
+        if (selectedCity) {
+            const filteredDepartments = departments
+                .filter((department) => department.city === selectedCity.value)
+                .map((department) => ({
+                    value: department.department, 
+                    label: department.department
+                }))
+            setDepartmentOptions(filteredDepartments)
+            
+        } else {
+            setDepartmentOptions([])
+        }
+    }, [selectedCity, departments])
+
+    const handleOnChangeCity = (selectedOption) => {
+        setSelectedCity(selectedOption)
+        setSelectedDepartment(null);
+    }
+    const handleOnChangeDepartments = (selectedOption) => {
+        setSelectedDepartment(selectedOption)
+    }
+
     return (
         <>
-            
+            <SD.MenuWrapper>
+                <SD.Menu>
+                    <SD.MenuTitle>Select a city</SD.MenuTitle>
+                    <Select
+                        className='menu-select'
+                        value={selectedCity}
+                        onChange={handleOnChangeCity}
+                        options={cityOptions}
+                        placeholder={"Select a city..."}
+                        isSearchable
+                        isClearable
+                        menuPortalTarget={document.body}
+                        styles={{
+                            container: (base) => ({
+                                ...base,
+                                maxWidth: "500px",
+                            }),
+                        }}
+                    />
+                    <SD.MenuTitle>Select a department</SD.MenuTitle>
+                    <Select
+                        className='menu-select'
+                        value={selectedDepartment}
+                        onChange={handleOnChangeDepartments}
+                        options={departmentOptions}
+                        placeholder={"Select a department..."}
+                        isClearable
+                        isSearchable
+                        isDisabled={!selectedCity}
+                        menuPortalTarget={document.body}
+                        styles={{
+                            container: (base) => ({
+                                ...base,
+                                maxWidth: "500px",
+                            }),
+                        }}
+                    />
+                </SD.Menu>
+            </SD.MenuWrapper>
         </>
     )
 }
