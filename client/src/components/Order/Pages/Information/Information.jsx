@@ -6,6 +6,10 @@ import {UserDataContext} from '../../../Contexts/ContextsUserData/ContextsUserDa
 import { StyledMain as SM, StyledUser as SU, StyledDelivery as SD, StyledExtra as SE} from './StyledInformationPage'
 import { cityDb, deliveryDb } from '../../../../db/db'
 import Select from 'react-select'
+import Checkbox from '@mui/material/Checkbox';
+import Textarea from '@mui/joy/Textarea';
+import { FormControlLabel } from '@mui/material';
+import {theme} from '../../../../styles/theme'
 
 const defaultValues = {
     name: "",
@@ -61,8 +65,12 @@ export default function Information () {
                             inputsErrors={inputsErrors}
                             setInformationFormData={setInformationFormData}
                         />
-                        <DeliveryType/>
-                        <ExtraFields/>
+                        <DeliveryType
+                            setInformationFormData={setInformationFormData}
+                        />
+                        <ExtraFields
+                            setInformationFormData={setInformationFormData}
+                        />
                     </SM.InformationForm>
                 </SM.InformationPage>
             </SM.WrapperInformationPage>
@@ -180,7 +188,7 @@ function OptionType ({type, onChange, value}) {
     )
 }
 
-function DeliveryType () {
+function DeliveryType ({setInformationFormData}) {
 
     const [deliveryType, setDeliveryType] = useState(null)
     const [cities, setCities] = useState(cityDb[0] || [])
@@ -194,6 +202,7 @@ function DeliveryType () {
     const handleOnChangeDeliveryType = (e) => {
         const type = e.target.value
         setDeliveryType((prev) => (type === prev ? prev : type))
+        setInformationFormData((prev) => ({...prev, type: type}))
         const filteredDepartments = deliveryDb.filter((department) => department.type === type)
         setDepartments(filteredDepartments)
     }
@@ -215,6 +224,7 @@ function DeliveryType () {
                             <DeliveryMenu
                                 cities={cities}
                                 departments={departments}
+                                setInformationFormData={setInformationFormData}
                             />
                         }
                         <OptionType
@@ -226,6 +236,7 @@ function DeliveryType () {
                             <DeliveryMenu
                                 cities={cities}
                                 departments={departments}
+                                setInformationFormData={setInformationFormData}
                             />
                         } 
                     </SD.WrapperOptions>
@@ -235,7 +246,7 @@ function DeliveryType () {
     )
 }
 
-function DeliveryMenu ({cities, departments}) {
+function DeliveryMenu ({cities, departments, setInformationFormData}) {
 
     const [selectedCity, setSelectedCity] = useState(null)
     const [selectedDepartment, setSelectedDepartment] = useState(null)
@@ -259,10 +270,18 @@ function DeliveryMenu ({cities, departments}) {
 
     const handleOnChangeCity = (selectedOption) => {
         setSelectedCity(selectedOption)
+        setInformationFormData((prev) => ({
+            ...prev, 
+            city: selectedOption ? selectedOption.value : null
+        }))
         setSelectedDepartment(null);
     }
     const handleOnChangeDepartments = (selectedOption) => {
         setSelectedDepartment(selectedOption)
+        setInformationFormData((prev) => ({
+            ...prev, 
+            department: selectedOption ? selectedOption.value : null
+        }))
     }
 
     return (
@@ -310,12 +329,70 @@ function DeliveryMenu ({cities, departments}) {
     )
 }
 
-function ExtraFields () {
+function ExtraFields ({setInformationFormData}) {
+
+    const [isChecked, setIsChecked] = useState(false)
+    const [comment, setComment] = useState(null)
+    
+    const handleOnChangeCheckbox = (e) => {
+        const value = e.target.checked
+        setIsChecked(value)
+        setInformationFormData((prev) => ({
+            ...prev,
+            doNotCallBack: value,
+        }))
+    }
+
+    const handleOnChangeComment = (e) => {
+        const value = e.target.value
+        setComment(value)
+        setInformationFormData((prev) => ({
+            ...prev,
+            comment: value
+        }))
+    }
+
     return (
         <>
             <SE.ExtraFieldsWrapper>
                 <SE.ExtraFieldsBlock>
-
+                    <FormControlLabel
+                        control={<Checkbox 
+                            checked={isChecked} 
+                            onChange={handleOnChangeCheckbox}
+                            sx={{
+                                '& .MuiSvgIcon-root': { 
+                                    fontSize: 22,
+                                },
+                                color: 'rgba(148, 143, 143, 0.96)',
+                                '&.Mui-checked': {
+                                    color: `${theme.color.accent}`,
+                                },
+                            }}
+                        />}
+                        label="Do not call back to confirm the order"
+                        sx={{
+                            '& .MuiFormControlLabel-label': {
+                                fontFamily: `${theme.font.main}`,
+                                color: `${theme.color.textColor}`,
+                                fontSize: '17px',
+                            },
+                        }}
+                    />
+                    <SE.TextAreaWrapper>
+                        <SE.Title>Your wishes or comments about the order</SE.Title>
+                        <Textarea
+                            minRows={3}
+                            maxRows={5}
+                            size='md'
+                            value={comment}
+                            onChange={handleOnChangeComment}
+                            sx={{
+                                maxWidth: '460px',
+                                '--Textarea-focusedHighlight': `${theme.color.accent} !important`,
+                            }}
+                        />
+                    </SE.TextAreaWrapper>
                 </SE.ExtraFieldsBlock>
             </SE.ExtraFieldsWrapper>
         </>

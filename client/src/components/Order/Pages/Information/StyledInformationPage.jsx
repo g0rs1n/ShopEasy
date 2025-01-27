@@ -34,8 +34,7 @@ export const StyledMain = {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    row-gap: 15px;
-    border: 1px solid red;`,
+    row-gap: 15px;`,
 }
 
 // UserInformation
@@ -43,7 +42,6 @@ export const StyledMain = {
 export const StyledUser = {
     UserInformationWrapper: styled.div`
         padding: 10px;
-        border: 1px solid blue;
     `,
     UserInformationFields: styled(FieldsWrapperBase)``,
     WrapperUserTitle: styled(WrapperTitleBase)``,
@@ -84,7 +82,6 @@ export const StyledUser = {
 export const StyledDelivery = {
     DeliveryTypeWrapper: styled.div`
         padding: 10px;
-        border: 1px solid blue;
     `,
     DeliveryTypeFields: styled(FieldsWrapperBase)``,
     WrapperTitle: styled(WrapperTitleBase)``,
@@ -126,6 +123,7 @@ export const StyledDelivery = {
         margin-left: 30px;
         border-radius: 10px;
         border: 2px solid rgba(188, 186, 186, 0.96);
+        max-width: 500px;
     `,
     Menu: styled.div`
         padding: 10px;
@@ -143,7 +141,17 @@ export const StyledDelivery = {
 // ExtraFields
 
 export const StyledExtra = {
-    ExtraFieldsWrapper: styled.div``,
-    ExtraFieldsBlock: styled.div``,
-
+    ExtraFieldsWrapper: styled.div`
+        padding: 10px;
+    `,
+    ExtraFieldsBlock: styled(FieldsWrapperBase)`
+        row-gap: 6px;
+    `,
+    TextAreaWrapper: styled(FieldsWrapperBase)`
+        row-gap: 5px;
+    `,
+    Title: styled.h3`
+        font-size: 17px;
+        font-weight: 500;
+    `,
 }
