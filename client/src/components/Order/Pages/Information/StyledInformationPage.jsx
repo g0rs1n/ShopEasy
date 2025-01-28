@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { theme } from '../../../../styles/theme'
 
 // BaseStyles
 
@@ -148,10 +149,24 @@ export const StyledExtra = {
         row-gap: 6px;
     `,
     TextAreaWrapper: styled(FieldsWrapperBase)`
-        row-gap: 5px;
+        row-gap: 15px;
     `,
     Title: styled.h3`
         font-size: 17px;
         font-weight: 500;
+    `,
+    Button: styled.button`
+        padding: 14px 10px;
+        border: 1px solid #1477cd;
+        background-color: #1477cd;
+        color: #fff;
+        max-width: 100px;
+        border-radius: 12px;
+
+        &:hover{
+            transition: 0.3s;
+            border: 1px solid #3a9fd6;
+            background-color: #3a9fd6;
+        }
     `,
 }

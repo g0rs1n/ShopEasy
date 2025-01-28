@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
+import {useNavigate} from 'react-router-dom'
 import { CheckIsActivePageContext } from '../../../Contexts/ContextsOrder/ContextsOrder'
 import {SetOrderDataContext } from '../../../Contexts/ContextsOrder/ContextsOrder'
 import {UserDataContext} from '../../../Contexts/ContextsUserData/ContextsUserData'
@@ -10,6 +11,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Textarea from '@mui/joy/Textarea';
 import { FormControlLabel } from '@mui/material';
 import {theme} from '../../../../styles/theme'
+import { pageMapping } from '../../Order'
 
 const defaultValues = {
     name: "",
@@ -69,6 +71,8 @@ export default function Information () {
                             setInformationFormData={setInformationFormData}
                         />
                         <ExtraFields
+                            setOrderData={setOrderData}
+                            informationFormData={informationFormData}
                             setInformationFormData={setInformationFormData}
                         />
                     </SM.InformationForm>
@@ -329,10 +333,12 @@ function DeliveryMenu ({cities, departments, setInformationFormData}) {
     )
 }
 
-function ExtraFields ({setInformationFormData}) {
+function ExtraFields ({setOrderData, informationFormData, setInformationFormData}) {
 
     const [isChecked, setIsChecked] = useState(false)
-    const [comment, setComment] = useState(null)
+    const [comment, setComment] = useState("")
+    const userData = useContext(UserDataContext)
+    const navigate = useNavigate()
     
     const handleOnChangeCheckbox = (e) => {
         const value = e.target.checked
@@ -350,6 +356,16 @@ function ExtraFields ({setInformationFormData}) {
             ...prev,
             comment: value
         }))
+    }
+
+    const handleOnClickContinueButton = (e,page) => {
+        e.preventDefault()
+        const basePath = Object.keys(userData).length === 0 ? '/order' : '/app/order'
+        setOrderData((prev) => ({
+            ...prev,
+            informationFormData
+        }))
+        navigate(`${basePath}/${page}`)
     }
 
     return (
@@ -392,6 +408,7 @@ function ExtraFields ({setInformationFormData}) {
                                 '--Textarea-focusedHighlight': `${theme.color.accent} !important`,
                             }}
                         />
+                        <SE.Button onClick={(e) => handleOnClickContinueButton(e,'payment')}>Continue</SE.Button>
                     </SE.TextAreaWrapper>
                 </SE.ExtraFieldsBlock>
             </SE.ExtraFieldsWrapper>
