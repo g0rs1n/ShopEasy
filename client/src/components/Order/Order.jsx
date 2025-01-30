@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import arrowPrev from '../../assets/img/icons/cart/arrow-prev.png'
-import {CheckIsActivePageContext, OrderDataContext, SetOrderDataContext} from '../Contexts/ContextsOrder/ContextsOrder'
+import {CheckIsActivePageContext, } from '../Contexts/ContextsOrder/ContextsOrder'
 import { UserDataContext } from '../Contexts/ContextsUserData/ContextsUserData'
 import './Order.scss'
 
-export const pageMapping = {
+const pageMapping = {
     'information': {pages1: true, pages2: false, pages3: false},
     'payment' : {pages1: true, pages2: true, pages3: false},
     'confirmation' : {pages1: true, pages2: true, pages3: true},
@@ -20,7 +20,7 @@ export default function Order () {
         pages2: false,
         pages3: false,
     })
-    const [orderData, setOrderData] = useState({})
+    // const [orderData, setOrderData] = useState({})
     const userData = useContext(UserDataContext)
 
     const checkIsActivePage = () => {
@@ -76,13 +76,9 @@ export default function Order () {
                         </div>
                     </div>
                     <div className='pages'>
-                        <OrderDataContext.Provider value={orderData}>
-                            <SetOrderDataContext.Provider value={setOrderData}>
-                                <CheckIsActivePageContext.Provider value={checkIsActivePage}>
-                                    <Outlet/>  
-                                </CheckIsActivePageContext.Provider>
-                            </SetOrderDataContext.Provider>
-                        </OrderDataContext.Provider>
+                        <CheckIsActivePageContext.Provider value={checkIsActivePage}>
+                            <Outlet/>  
+                        </CheckIsActivePageContext.Provider>
                     </div>
                 </div>
             </div>

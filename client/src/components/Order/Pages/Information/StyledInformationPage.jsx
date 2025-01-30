@@ -139,6 +139,18 @@ export const StyledDelivery = {
     MenuFieldOption: styled.option``,
 }
 
+export const radioStyles = {
+    color: "rgba(148, 143, 143, 0.96)",
+    "&.Mui-checked": {
+        color: `${theme.color.accent}`
+    }
+}
+
+export const labelStyles = {
+
+}
+
+
 // ExtraFields
 
 export const StyledExtra = {
@@ -169,4 +181,24 @@ export const StyledExtra = {
             background-color: #3a9fd6;
         }
     `,
+}
+
+// None StyledComponents Styles
+
+// Mui Types
+
+export const MuiTypes = {
+    // Delivery Type Styles
+    radioStyles: {
+        color: "rgba(148, 143, 143, 0.96)",
+        "&.Mui-checked": {
+            color: theme.color.accent
+        }
+    },
+    labelStyles: {
+        "& .MuiFormControlLabel-label": {
+            fontFamily: theme.font.main,
+            fontSize: '17px'
+        } 
+    },
 }
