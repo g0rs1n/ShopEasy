@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import {Form, useNavigate} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { CheckIsActivePageContext } from '../../../Contexts/ContextsOrder/ContextsOrder'
-import { useOrderStore, useInformationStore } from '../../../../store/orderStore/orderStore'
+import { useOrderStore} from '../../../../store/orderStore/orderStore'
 import {UserDataContext} from '../../../Contexts/ContextsUserData/ContextsUserData'
 import { StyledMain as SM, StyledUser as SU, StyledDelivery as SD, StyledExtra as SE, MuiTypes as MUI} from './StyledInformationPage'
 import { cityDb, deliveryDb } from '../../../../db/db'
@@ -23,7 +23,8 @@ export default function Information () {
 
     const checkIsActivePage = useContext(CheckIsActivePageContext)
     const userData = useContext(UserDataContext)
-    const loadUserData = useInformationStore((state) => state.loadUserData)
+    const loadUserData = useOrderStore((state) => state.loadUserData)
+    const checkExpiration = useOrderStore((state) => state.checkExpiration)
     const { register, reset, handleSubmit, formState: {errors, isValid} } = useForm({
         mode: "onChange",
         defaultValues: userData || defaultValues,
@@ -46,6 +47,7 @@ export default function Information () {
 
     useEffect(() => {
         checkIsActivePage()
+        checkExpiration()
     }, [])
 
     useEffect(() => {
@@ -75,12 +77,12 @@ export default function Information () {
 
 function UserInformation ({register, inputsErrors}) {
 
-    const informationData = useInformationStore((state) => state.informationData)
-    const setInformationData = useInformationStore((state) => state.setInformationData)
+    const orderData = useOrderStore((state) => state.orderData)
+    const setOrderData = useOrderStore((state) => state.setOrderData)
 
     const handleOnChangeInformationFormData = (e) => {
         const {name, value} = e.target;
-        setInformationData({[name]: value})
+        setOrderData({[name]: value})
     }
 
     return (
@@ -95,7 +97,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Name'} 
                             type={'text'} 
                             name={'name'}
-                            value={informationData.name}
+                            value={orderData.name}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -107,7 +109,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Surname'} 
                             type={'text'} 
                             name={'surname'}
-                            value={informationData.surname}
+                            value={orderData.surname}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -119,7 +121,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Phone'} 
                             type={'text'} 
                             name={'phone'}
-                            value={informationData.phone}
+                            value={orderData.phone}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -131,7 +133,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Email'} 
                             type={'email'} 
                             name={'email'}
-                            value={informationData.email}
+                            value={orderData.email}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -182,8 +184,8 @@ function DeliveryType () {
     ]
     const [cities, setCities] = useState(cityDb || [])
     const [departments, setDepartments] = useState(deliveryDb || [])
-    const informationData = useInformationStore((state) => state.informationData)
-    const setInformationData = useInformationStore((state) => state.setInformationData)
+    const orderData = useOrderStore((state) => state.orderData)
+    const setOrderData = useOrderStore((state) => state.setOrderData)
 
     useEffect(() => {
         if (cityDb) setCities(cityDb)
@@ -192,7 +194,7 @@ function DeliveryType () {
 
     const handleOnChangeDeliveryType = (e) => {
         const type = e.target.value
-        setInformationData({type: type})
+        setOrderData({type: type})
         const filteredDepartments = deliveryDb.filter((department) => department.type === type)
         setDepartments(filteredDepartments)
     }
@@ -206,7 +208,7 @@ function DeliveryType () {
                     </SD.WrapperTitle>
                     <FormControl>
                         <RadioGroup
-                            value={informationData.type || null}
+                            value={orderData.type || null}
                             onChange={handleOnChangeDeliveryType}
                         >
                            {
@@ -220,7 +222,7 @@ function DeliveryType () {
                                             label={label}
                                             sx={MUI.labelStyles}
                                         />
-                                        {informationData.type === value && <DeliveryMenu cities={cities} departments={departments}/>}
+                                        {orderData.type === value && <DeliveryMenu cities={cities} departments={departments}/>}
                                     </div>
                                 ))
                             } 
@@ -235,14 +237,14 @@ function DeliveryType () {
 function DeliveryMenu ({cities, departments}) {
 
     const [departmentOptions, setDepartmentOptions] = useState([])
-    const informationData = useInformationStore((state) => state.informationData)
-    const setInformationData = useInformationStore((state) => state.setInformationData)
+    const orderData = useOrderStore((state) => state.orderData)
+    const setOrderData = useOrderStore((state) => state.setOrderData)
     const cityOptions = cities.map((city) => ({value: city, label: city}))
     
     useEffect(() => {
-        if (informationData.city) {
+        if (orderData.city) {
             const filteredDepartments = departments
-                .filter((department) => department.city === informationData.city)
+                .filter((department) => department.city === orderData.city)
                 .map((department) => ({
                     value: department.department, 
                     label: department.department
@@ -252,16 +254,16 @@ function DeliveryMenu ({cities, departments}) {
         } else {
             setDepartmentOptions([])
         }
-    }, [informationData.city, departments])
+    }, [orderData.city, departments])
 
     const handleOnChangeCity = (selectedOption) => {
-        setInformationData({
+        setOrderData({
             city: selectedOption ? selectedOption.value : null,
             department: null
         })
     }
     const handleOnChangeDepartments = (selectedOption) => {
-        setInformationData({department: selectedOption ? selectedOption.value : null})
+        setOrderData({department: selectedOption ? selectedOption.value : null})
     }
 
     return (
@@ -271,7 +273,7 @@ function DeliveryMenu ({cities, departments}) {
                     <SD.MenuTitle>Select a city</SD.MenuTitle>
                     <Select
                         className='menu-select'
-                        value={informationData.city ? { value: informationData.city, label: informationData.city } : null}
+                        value={orderData.city ? { value: orderData.city, label: orderData.city } : null}
                         onChange={handleOnChangeCity}
                         options={cityOptions}
                         placeholder={"Select a city..."}
@@ -288,13 +290,13 @@ function DeliveryMenu ({cities, departments}) {
                     <SD.MenuTitle>Select a department</SD.MenuTitle>
                     <Select
                         className='menu-select'
-                        value={informationData.department ? { value: informationData.department, label: informationData.department } : null}
+                        value={orderData.department ? { value: orderData.department, label: orderData.department } : null}
                         onChange={handleOnChangeDepartments}
                         options={departmentOptions}
                         placeholder={"Select a department..."}
                         isClearable
                         isSearchable
-                        isDisabled={!informationData.city}
+                        isDisabled={!orderData.city}
                         menuPortalTarget={document.body}
                         styles={{
                             container: (base) => ({
@@ -312,25 +314,23 @@ function DeliveryMenu ({cities, departments}) {
 function ExtraFields () {
 
     const userData = useContext(UserDataContext)
+    const orderData = useOrderStore((state) => state.orderData)
     const setOrderData = useOrderStore((state) => state.setOrderData)
-    const informationData = useInformationStore((state) => state.informationData)
-    const setInformationData = useInformationStore((state) => state.setInformationData)
     const navigate = useNavigate()
     
     const handleOnChangeCheckbox = (e) => {
         const value = e.target.checked
-        setInformationData({doNotCallBack: value})
+        setOrderData({doNotCallBack: value})
     }
 
     const handleOnChangeComment = (e) => {
         const value = e.target.value
-        setInformationData({comment: value})
+        setOrderData({comment: value})
     }
 
     const handleOnClickContinueButton = (e,page) => {
         e.preventDefault()
         const basePath = Object.keys(userData).length === 0 ? '/order' : '/app/order'
-        setOrderData({informationData})
         navigate(`${basePath}/${page}`)
     }
 
@@ -340,7 +340,7 @@ function ExtraFields () {
                 <SE.ExtraFieldsBlock>
                     <FormControlLabel
                         control={<Checkbox 
-                            checked={informationData.doNotCallBack || false} 
+                            checked={orderData.doNotCallBack || false} 
                             onChange={handleOnChangeCheckbox}
                             sx={{
                                 '& .MuiSvgIcon-root': { 
@@ -367,7 +367,7 @@ function ExtraFields () {
                             minRows={3}
                             maxRows={5}
                             size='md'
-                            value={informationData.comment || ""}
+                            value={orderData.comment || ""}
                             onChange={handleOnChangeComment}
                             sx={{
                                 maxWidth: '460px',

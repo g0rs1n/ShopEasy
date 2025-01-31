@@ -1,30 +1,44 @@
 import {create} from 'zustand'
+import {persist} from 'zustand/middleware'
 
-export const useOrderStore = create((set) => ({
-    orderData: {},
-    setOrderData: (newOrderData) => {
-        set((state) => ({
-            
-        }))
-    },
-}))
-
-export const useInformationStore = create((set) => ({
-    informationData: {},
-    setInformationData: (newInformationData) => {
-        set((state) => ({
-            informationData:{
-                ...state.informationData,
-                ...newInformationData
+export const useOrderStore = create(
+    persist(
+        (set) => ({
+            orderData: {},
+            setOrderData: (newOrderData) => {
+                const currentTime = Date.now()
+                localStorage.setItem("order-storage-time", currentTime)
+                set((state) => ({
+                    orderData: {
+                        ...state.orderData,
+                        ...newOrderData
+                    }
+                }))
+            },
+            loadUserData: (userData) => {
+                set((state) => ({
+                    orderData: {
+                        ...state.orderData,
+                        ...userData
+                    }
+                }))
+            },
+            checkExpiration: () => {
+                const lastUpdateTime = localStorage.getItem('order-storage-time')
+                const currentTime = Date.now()
+                const expirationTime = 60 * 60 * 1000
+                const timeDifference = currentTime - Number(lastUpdateTime)
+                
+                if (lastUpdateTime && timeDifference > expirationTime) {
+                    localStorage.removeItem('order-storage')
+                    localStorage.removeItem('order-storage-time')
+                    set({orderData: {}})
+                }
             }
-        }))
-    },
-    loadUserData: (userData) => {
-        set((state) => ({
-            informationData: {
-                ...state.informationData,
-                ...userData
-            }
-        }))
-    },
-}))
+        }),
+        {
+            name: "order-storage",
+            getStorage: () => localStorage,
+        }
+    )
+)
