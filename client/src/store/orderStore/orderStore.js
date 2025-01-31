@@ -29,7 +29,7 @@ export const useOrderStore = create(
                 const expirationTime = 60 * 60 * 1000
                 const timeDifference = currentTime - Number(lastUpdateTime)
                 
-                if (lastUpdateTime && timeDifference > expirationTime) {
+                if (timeDifference > expirationTime) {
                     localStorage.removeItem('order-storage')
                     localStorage.removeItem('order-storage-time')
                     set({orderData: {}})

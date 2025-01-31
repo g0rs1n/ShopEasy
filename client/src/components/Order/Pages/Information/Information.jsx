@@ -10,7 +10,6 @@ import Select from 'react-select'
 import Checkbox from '@mui/material/Checkbox';
 import Textarea from '@mui/joy/Textarea';
 import { FormControlLabel, FormControl, RadioGroup, Radio } from '@mui/material';
-import {theme} from '../../../../styles/theme'
 
 const defaultValues = {
     name: "",
@@ -25,7 +24,7 @@ export default function Information () {
     const userData = useContext(UserDataContext)
     const loadUserData = useOrderStore((state) => state.loadUserData)
     const checkExpiration = useOrderStore((state) => state.checkExpiration)
-    const { register, reset, handleSubmit, formState: {errors, isValid} } = useForm({
+    const { register, reset, formState: {errors} } = useForm({
         mode: "onChange",
         defaultValues: userData || defaultValues,
     })
@@ -97,7 +96,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Name'} 
                             type={'text'} 
                             name={'name'}
-                            value={orderData.name}
+                            value={orderData.name || ""}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -109,7 +108,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Surname'} 
                             type={'text'} 
                             name={'surname'}
-                            value={orderData.surname}
+                            value={orderData.surname || ""}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -121,7 +120,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Phone'} 
                             type={'text'} 
                             name={'phone'}
-                            value={orderData.phone}
+                            value={orderData.phone || ""}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -133,7 +132,7 @@ function UserInformation ({register, inputsErrors}) {
                             label={'Email'} 
                             type={'email'} 
                             name={'email'}
-                            value={orderData.email}
+                            value={orderData.email || ""}
                             inputsErrors={inputsErrors}
                             register={register}
                             validationRules={{
@@ -342,24 +341,10 @@ function ExtraFields () {
                         control={<Checkbox 
                             checked={orderData.doNotCallBack || false} 
                             onChange={handleOnChangeCheckbox}
-                            sx={{
-                                '& .MuiSvgIcon-root': { 
-                                    fontSize: 22,
-                                },
-                                color: 'rgba(148, 143, 143, 0.96)',
-                                '&.Mui-checked': {
-                                    color: `${theme.color.accent}`,
-                                },
-                            }}
+                            sx={MUI.checkboxStyles}
                         />}
                         label="Do not call back to confirm the order"
-                        sx={{
-                            '& .MuiFormControlLabel-label': {
-                                fontFamily: `${theme.font.main}`,
-                                color: `${theme.color.textColor}`,
-                                fontSize: '17px',
-                            },
-                        }}
+                        sx={MUI.labelStyles}
                     />
                     <SE.TextAreaWrapper>
                         <SE.Title>Your wishes or comments about the order</SE.Title>
@@ -369,10 +354,7 @@ function ExtraFields () {
                             size='md'
                             value={orderData.comment || ""}
                             onChange={handleOnChangeComment}
-                            sx={{
-                                maxWidth: '460px',
-                                '--Textarea-focusedHighlight': `${theme.color.accent} !important`,
-                            }}
+                            sx={MUI.textareaStyles}
                         />
                         <SE.Button onClick={(e) => handleOnClickContinueButton(e,'payment')}>Continue</SE.Button>
                     </SE.TextAreaWrapper>

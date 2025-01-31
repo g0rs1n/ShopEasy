@@ -168,7 +168,7 @@ export const StyledExtra = {
         font-weight: 500;
     `,
     Button: styled.button`
-        padding: 14px 10px;
+        padding: 12px 10px;
         border: 1px solid #1477cd;
         background-color: #1477cd;
         color: #fff;
@@ -200,5 +200,19 @@ export const MuiTypes = {
             fontFamily: theme.font.main,
             fontSize: '17px'
         } 
+    },
+    // Extra Fields 
+    checkboxStyles: {
+        '& .MuiSvgIcon-root': { 
+            fontSize: 22,
+        },
+        color: 'rgba(148, 143, 143, 0.96)',
+        '&.Mui-checked': {
+            color: theme.color.accent,
+        },
+    },
+    textareaStyles: {
+        maxWidth: '460px',
+        '--Textarea-focusedHighlight': `${theme.color.accent} !important`,
     },
 }
