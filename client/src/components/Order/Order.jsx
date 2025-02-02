@@ -20,7 +20,6 @@ export default function Order () {
         pages2: false,
         pages3: false,
     })
-    // const [orderData, setOrderData] = useState({})
     const userData = useContext(UserDataContext)
 
     const checkIsActivePage = () => {

@@ -192,9 +192,9 @@ function CartItem ({product, filteredProducts, setTotalPrice}) {
                         </h3>
                     </div>
                     <div className='cart-item-buttons'>
-                        <div className='cart-button-delete'>
+                        <div onClick={() => handleDelete(product)} className='cart-button-delete'>
                             <img className='cart-button-delete__img' src={iconDelete} alt="delete" />
-                            <h3 onClick={() => handleDelete(product)} className='cart-button-delete__h3'>
+                            <h3 className='cart-button-delete__h3'>
                                 Delete
                             </h3>
                         </div>

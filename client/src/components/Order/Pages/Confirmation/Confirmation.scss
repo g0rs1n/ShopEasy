@@ -1,0 +1,10 @@
+.confirmation-none-delivery{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    & h3{
+        font-size: 17px;
+        font-weight: 500;
+    }
+}

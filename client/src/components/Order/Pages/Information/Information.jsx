@@ -193,7 +193,11 @@ function DeliveryType () {
 
     const handleOnChangeDeliveryType = (e) => {
         const type = e.target.value
-        setOrderData({type: type})
+        setOrderData({
+            type: type,
+            city: null,
+            department: null,
+        })
         const filteredDepartments = deliveryDb.filter((department) => department.type === type)
         setDepartments(filteredDepartments)
     }
@@ -339,7 +343,7 @@ function ExtraFields () {
                 <SE.ExtraFieldsBlock>
                     <FormControlLabel
                         control={<Checkbox 
-                            checked={orderData.doNotCallBack || false} 
+                            checked={orderData.doNotCallBack || true} 
                             onChange={handleOnChangeCheckbox}
                             sx={MUI.checkboxStyles}
                         />}
